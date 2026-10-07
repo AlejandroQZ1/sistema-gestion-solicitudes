@@ -1,0 +1,31 @@
+@page
+@model AdministracionSoluciones.Pages.Usuarios.EditModel
+@{
+    // USR4 - Editar usuario
+    ViewData["Title"] = "Editar usuario";
+}
+<link rel="stylesheet" href="~/css/seguridad.css" asp-append-version="true" />
+
+<div class="seg-encabezado">
+    <div>
+        <h2>Editar usuario</h2>
+        <p>Todos los datos son requeridos.</p>
+    </div>
+</div>
+
+<div class="seg-tarjeta seg-formulario">
+    <form method="post" asp-route-id="@Model.Input.UsuarioID" autocomplete="off" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <partial name="_Formulario" for="Input" />
+
+        <div class="seg-botones">
+            <a asp-page="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn seg-btn-primario">Guardar</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

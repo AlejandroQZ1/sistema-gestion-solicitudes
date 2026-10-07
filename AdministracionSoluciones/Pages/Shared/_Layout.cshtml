@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - SIGES</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AdministracionSoluciones.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="sistema">
+
+        <!-- MENÚ LATERAL -->
+        <aside class="sidebar">
+
+            <div class="logo-sistema">
+                <div class="logo-icono">S</div>
+
+                <div>
+                    <h2>SIGES</h2>
+                    <span>Gestión de Solicitudes</span>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <!--"#" para conectar las respectivas pantallas -->
+
+                <a asp-page="/Index"
+                   class="menu-item">
+                    <span>⌂</span>
+                    Inicio
+                </a>
+
+                <a asp-page="/Usuarios/Index"
+                   class="menu-item">
+                    <span>👤</span>
+                    Usuarios
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>📋</span>
+                    Solicitudes
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>✓</span>
+                    Tareas
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span>📊</span>
+                    Reportes
+                </a>
+
+            </nav>
+
+            <div class="cerrar-sesion">
+                <a asp-page="/Login/CerrarSesion"
+                   class="menu-item">
+                    <span>↪</span>
+                    Cerrar sesión
+                </a>
+            </div>
+
+        </aside>
+
+
+        <!-- PARTE DERECHA DEL SISTEMA -->
+        <div class="contenido-sistema">
+
+            <!-- ENCABEZADO -->
+            <header class="topbar">
+
+                <div>
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+
+                <div class="usuario">
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div class="datos-usuario">
+                        <strong>@Sesion.NombreCompleto(Context)</strong>
+                        <span>@Sesion.NombreUsuario(Context)</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- CONTENIDO DE CADA PÁGINA -->
+            <main class="contenido-principal">
+                @RenderBody()
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

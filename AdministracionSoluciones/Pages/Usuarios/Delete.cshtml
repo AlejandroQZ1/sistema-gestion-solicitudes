@@ -1,0 +1,37 @@
+@page
+@model AdministracionSoluciones.Pages.Usuarios.DeleteModel
+@{
+    // USR4 - Confirmación para eliminar un usuario
+    ViewData["Title"] = "Eliminar usuario";
+}
+<link rel="stylesheet" href="~/css/seguridad.css" asp-append-version="true" />
+
+<div class="seg-encabezado">
+    <div>
+        <h2>Eliminar usuario</h2>
+        <p>¿Está seguro de que desea eliminar este usuario? Esta acción no se puede deshacer.</p>
+    </div>
+</div>
+
+<div class="seg-tarjeta seg-formulario">
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Nombre de usuario</dt>
+        <dd class="col-sm-8">@Model.Usuario!.NombreUsuario</dd>
+
+        <dt class="col-sm-4">Nombre completo</dt>
+        <dd class="col-sm-8">@Model.Usuario!.NombreCompleto</dd>
+
+        <dt class="col-sm-4">Correo</dt>
+        <dd class="col-sm-8">@Model.Usuario!.Correo</dd>
+
+        <dt class="col-sm-4">Estado</dt>
+        <dd class="col-sm-8"><span class="seg-estado seg-estado-@Model.Usuario!.Estado.ToLower()">@Model.Usuario!.Estado</span></dd>
+    </dl>
+
+    <form method="post" asp-route-id="@Model.Usuario!.UsuarioID">
+        <div class="seg-botones">
+            <a asp-page="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+    </form>
+</div>

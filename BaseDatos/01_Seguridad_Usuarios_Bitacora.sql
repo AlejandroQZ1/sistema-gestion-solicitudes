@@ -1,46 +1,40 @@
 /* =============================================================
    SIGES - Tablas del módulo de seguridad (USR1, USR2, USR4)
-   Base de datos: SQL Server
+   Base de datos: MySQL 8
+   Ejecutar en MySQL Workbench (botón del rayo) o en la consola de MySQL.
    Si la base de datos del equipo ya trae estas tablas con otros
-   nombres, no ejecutar este script: ajustar Models/Usuario.cs y
-   Models/Bitacora.cs para que coincidan.
+   nombres, no ejecutar este script: ajustar las consultas de
+   AdministracionSoluciones.Repository para que coincidan.
    ============================================================= */
 
-IF DB_ID('SIGES') IS NULL
-    CREATE DATABASE SIGES;
-GO
+CREATE DATABASE IF NOT EXISTS siges
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 
-USE SIGES;
-GO
+USE siges;
 
-IF OBJECT_ID('dbo.Usuarios', 'U') IS NULL
-BEGIN
-    CREATE TABLE dbo.Usuarios (
-        Id               INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Usuarios PRIMARY KEY,
-        NombreUsuario    NVARCHAR(50)  NOT NULL,
-        NombreCompleto   NVARCHAR(150) NOT NULL,
-        Correo           NVARCHAR(150) NOT NULL,
-        Contrasena       NVARCHAR(500) NOT NULL,  -- cifrada con AES-GCM 256 (Base64)
-        Estado           NVARCHAR(20)  NOT NULL CONSTRAINT DF_Usuarios_Estado DEFAULT ('Activo'),
-        IntentosFallidos INT           NOT NULL CONSTRAINT DF_Usuarios_Intentos DEFAULT (0),
-        CONSTRAINT UQ_Usuarios_NombreUsuario UNIQUE (NombreUsuario),
-        CONSTRAINT CK_Usuarios_Estado CHECK (Estado IN ('Activo', 'Inactivo', 'Bloqueado'))
-    );
-END
-GO
+CREATE TABLE IF NOT EXISTS usuarios (
+    UsuarioID        INT           NOT NULL AUTO_INCREMENT,
+    NombreUsuario    VARCHAR(50)   NOT NULL,
+    NombreCompleto   VARCHAR(150)  NOT NULL,
+    Correo           VARCHAR(150)  NOT NULL,
+    Contrasena       VARCHAR(500)  NOT NULL,  -- cifrada con AES-GCM 256 (Base64)
+    Estado           VARCHAR(20)   NOT NULL DEFAULT 'Activo',
+    IntentosFallidos INT           NOT NULL DEFAULT 0,
+    CONSTRAINT PK_usuarios PRIMARY KEY (UsuarioID),
+    CONSTRAINT UQ_usuarios_NombreUsuario UNIQUE (NombreUsuario),
+    CONSTRAINT CK_usuarios_Estado CHECK (Estado IN ('Activo', 'Inactivo', 'Bloqueado'))
+) ENGINE = InnoDB;
 
-IF OBJECT_ID('dbo.Bitacora', 'U') IS NULL
-BEGIN
-    CREATE TABLE dbo.Bitacora (
-        Id       INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Bitacora PRIMARY KEY,
-        Fecha    DATETIME2     NOT NULL,
-        Usuario  NVARCHAR(50)  NOT NULL,
-        Modulo   NVARCHAR(50)  NOT NULL,
-        Accion   NVARCHAR(50)  NOT NULL,
-        Detalle  NVARCHAR(MAX) NULL      -- JSON con los datos, nunca incluye la contraseña
-    );
-END
-GO
+CREATE TABLE IF NOT EXISTS bitacora (
+    BitacoraID INT          NOT NULL AUTO_INCREMENT,
+    Fecha      DATETIME     NOT NULL,
+    Usuario    VARCHAR(50)  NOT NULL,
+    Modulo     VARCHAR(50)  NOT NULL,
+    Accion     VARCHAR(50)  NOT NULL,
+    Detalle    TEXT         NULL,  -- JSON con los datos, nunca incluye la contraseña
+    CONSTRAINT PK_bitacora PRIMARY KEY (BitacoraID)
+) ENGINE = InnoDB;
 
 /* El usuario administrador inicial (admin / Admin123*) lo crea la
    aplicación automáticamente la primera vez que se ejecuta, porque la

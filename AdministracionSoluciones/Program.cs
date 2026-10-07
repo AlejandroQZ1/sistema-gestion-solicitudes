@@ -1,18 +1,25 @@
-using AdministracionSoluciones.Data;
-using AdministracionSoluciones.Filters;
-using AdministracionSoluciones.Models;
+using AdministracionSoluciones.Repository;
+using AdministracionSoluciones.Seguridad;
 using AdministracionSoluciones.Services;
-using Microsoft.EntityFrameworkCore;
+using AdministracionSoluciones.Services.Abstract;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Base de datos (cadena de conexión en appsettings.json → "ConnectionStrings:SIGES")
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SIGES")));
+// Add services to the container.
+// El filtro SesionRequeridaFilter protege TODAS las páginas: sin sesión → login (USR1)
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options => options.Filters.Add<SesionRequeridaFilter>());
 
-// Servicios compartidos
-builder.Services.AddSingleton<CifradoService>();
-builder.Services.AddScoped<BitacoraService>();
+// Acceso a datos (MySQL con Dapper)
+builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<BitacoraRepository>();
+
+// Servicios
+builder.Services.AddSingleton<ICifradoService, CifradoService>();
+builder.Services.AddScoped<IBitacoraService, BitacoraService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 // Sesión de usuario (USR1)
 builder.Services.AddDistributedMemoryCache();
@@ -23,11 +30,6 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// El filtro SesionRequeridaFilter protege TODAS las pantallas: sin sesión → login
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add<SesionRequeridaFilter>();
-});
 
 var app = builder.Build();
 
@@ -37,8 +39,7 @@ await CrearAdministradorInicialAsync(app);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
@@ -51,9 +52,7 @@ app.UseSession();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();
 
@@ -61,22 +60,22 @@ app.Run();
 static async Task CrearAdministradorInicialAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var cifrado = scope.ServiceProvider.GetRequiredService<CifradoService>();
+    var usuarioService = scope.ServiceProvider.GetRequiredService<IUsuarioService>();
     var config = app.Configuration;
 
-    if (await db.Usuarios.AnyAsync())
+    try
     {
-        return;
+        await usuarioService.CrearAdministradorInicialAsync(
+            config["AdministradorInicial:NombreUsuario"] ?? "admin",
+            config["AdministradorInicial:NombreCompleto"] ?? "Administrador del sistema",
+            config["AdministradorInicial:Correo"] ?? "admin@siges.com",
+            config["AdministradorInicial:Contrasena"] ?? "Admin123*");
     }
-
-    db.Usuarios.Add(new Usuario
+    catch (Exception ex)
     {
-        NombreUsuario = config["AdministradorInicial:NombreUsuario"] ?? "admin",
-        NombreCompleto = config["AdministradorInicial:NombreCompleto"] ?? "Administrador del sistema",
-        Correo = config["AdministradorInicial:Correo"] ?? "admin@siges.com",
-        Contrasena = cifrado.Cifrar(config["AdministradorInicial:Contrasena"] ?? "Admin123*"),
-        Estado = EstadosUsuario.Activo
-    });
-    await db.SaveChangesAsync();
+        app.Logger.LogError(ex,
+            "No se pudo conectar a MySQL para crear el administrador inicial. " +
+            "Revise que MySQL esté encendido, que se haya ejecutado el script de BaseDatos " +
+            "y que la cadena 'DefaultConnection' de appsettings.json tenga el usuario y la contraseña correctos.");
+    }
 }
