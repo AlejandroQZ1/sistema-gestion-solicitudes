@@ -1,0 +1,33 @@
+@page
+@model AdministracionSoluciones.Pages.EstadosSolicitudes.IndexModel
+@{ ViewData["Title"] = "Estados de solicitudes"; }
+@if (TempData["Exito"] is string mensaje) { <div class="alert alert-success" role="status">@mensaje</div> }
+@if (Model.Error != null) { <div class="alert alert-danger" role="alert">@Model.Error</div> }
+<div class="card shadow-sm"><div class="card-body">
+<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5">Estados de solicitudes</h2><a asp-page="Form" class="btn btn-primary">Nuevo</a></div>
+<div class="table-responsive"><table class="table table-striped align-middle">
+<thead><tr><th>Nombre</th><th>Identificador</th><th>Acciones</th></tr></thead><tbody>
+@foreach (var item in Model.Items) {
+<tr><td>@item.Nombre</td><td>@item.Identificador</td><td>
+<a asp-page="Form" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+<button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminar-@item.Id">Eliminar</button>
+</td></tr>
+}
+@if (Model.Items.Count == 0 && Model.Error == null) { <tr><td colspan="3">No hay registros.</td></tr> }
+</tbody></table></div>
+@foreach (var item in Model.Items) {
+<div class="modal fade" id="eliminar-@item.Id" tabindex="-1" aria-labelledby="titulo-@item.Id" aria-hidden="true">
+<div class="modal-dialog"><div class="modal-content">
+<div class="modal-header"><h2 class="modal-title h5" id="titulo-@item.Id">Confirmar eliminación</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+<div class="modal-body">¿Realmente desea eliminar el elemento seleccionado?<p class="mt-2"><strong>@item.Nombre</strong></p></div>
+<div class="modal-footer"><form method="post" asp-page="Delete" asp-route-id="@item.Id"><button type="submit" class="btn btn-danger">Sí</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button></div>
+</div></div></div>
+}
+@if (Model.Error == null) {
+<nav aria-label="Paginación" class="d-flex gap-3 align-items-center">
+@if (Model.Pagina > 1) { <a asp-route-pagina="@(Model.Pagina - 1)" class="btn btn-outline-secondary">Anterior</a> }
+<span>Página @Model.Pagina de @Model.Paginas · @Model.Total registros</span>
+@if (Model.Pagina < Model.Paginas) { <a asp-route-pagina="@(Model.Pagina + 1)" class="btn btn-outline-secondary">Siguiente</a> }
+</nav>
+}
+</div></div>

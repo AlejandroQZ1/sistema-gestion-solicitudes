@@ -13,6 +13,8 @@ builder.Services.AddRazorPages()
 // Acceso a datos (MySQL con Dapper)
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<CatalogoRepository>();
+builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<BitacoraRepository>();
 
 // Servicios

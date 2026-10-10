@@ -1,0 +1,12 @@
+@page "{id:int?}"
+@model AdministracionSoluciones.Pages.Representantes.FormModel
+@{ ViewData["Title"] = "Representantes"; }
+<div class="card shadow-sm"><div class="card-body">
+<h2 class="h5 mb-3">@(RouteData.Values["id"] == null ? "Nuevo registro" : "Editar registro")</h2>
+<form method="post">
+<div asp-validation-summary="All" class="text-danger" role="alert"></div>
+<div class="mb-3"><label asp-for="Input.Nombre" class="form-label">Nombre</label><input asp-for="Input.Nombre" class="form-control" maxlength="150" /><span asp-validation-for="Input.Nombre" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Input.Email" class="form-label">Correo electrónico</label><input asp-for="Input.Email" class="form-control" /><span asp-validation-for="Input.Email" class="text-danger"></span></div>
+<button type="submit" class="btn btn-primary">Guardar</button> <a asp-page="Index" class="btn btn-outline-secondary">Regresar al listado</a>
+</form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,11 @@
+@page "{id:int}"
+@model AdministracionSoluciones.Pages.Representantes.DeleteModel
+@{ ViewData["Title"] = "Eliminar registro"; }
+<div class="card shadow-sm"><div class="card-body">
+<div asp-validation-summary="All" class="text-danger" role="alert"></div>
+@if (Model.Item != null) {
+<h2 class="h5">¿Realmente desea eliminar el elemento seleccionado?</h2>
+<p><strong>@Model.Item.Nombre</strong> · @Model.Item.Email</p>
+<form method="post"><button class="btn btn-danger" type="submit">Sí</button> <a asp-page="Index" class="btn btn-outline-secondary">No</a></form>
+} else { <a asp-page="Index" class="btn btn-outline-secondary">Regresar al listado</a> }
+</div></div>
