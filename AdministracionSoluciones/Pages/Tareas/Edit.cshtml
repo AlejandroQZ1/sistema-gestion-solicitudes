@@ -1,0 +1,9 @@
+@page
+@model AdministracionSoluciones.Pages.Tareas.EditModel
+@{ ViewData["Title"] = "Editar tarea"; }
+@* Los formularios comparten los mismos campos y validaciones. *@
+<partial name="_Formulario" model="Model" />
+
+@section Scripts {
+    <script src="~/js/tareas.js" asp-append-version="true"></script>
+}

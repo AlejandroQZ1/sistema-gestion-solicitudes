@@ -1,0 +1,9 @@
+@page
+@model AdministracionSoluciones.Pages.ReportesTareas.PorUsuarioModel
+@{ ViewData["Title"] = "Tareas de un usuario por mes"; }
+@* Presentacion compartida de los filtros y resultados del reporte. *@
+<partial name="_Reporte" model="Model.Datos" />
+
+@section Scripts {
+    <script src="~/js/tareas.js" asp-append-version="true"></script>
+}
