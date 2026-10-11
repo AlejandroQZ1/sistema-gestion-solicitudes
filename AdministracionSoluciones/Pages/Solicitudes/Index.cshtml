@@ -1,0 +1,266 @@
+﻿
+@page
+@model AdministracionSoluciones.Pages.Solicitudes.IndexModel
+
+@{
+    ViewData["Title"] = "Administración de solicitudes";
+}
+
+<style>
+    body {
+        background-color: #FAF8F3;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .solicitudes-container {
+        max-width: 1400px;
+        margin: 30px auto;
+    }
+
+    .solicitudes-card {
+        background: #FFFFFF;
+        border: 1px solid #E6E1D8;
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .solicitudes-title {
+        color: #24483D;
+        font-weight: 700;
+    }
+
+    .table thead th {
+        background: #F0EEE8;
+        color: #24483D;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .estado {
+        display: inline-block;
+        border-radius: 20px;
+        padding: 5px 10px;
+        font-size: .8rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-nueva {
+        background: #DDF3E4;
+        color: #205B35;
+    }
+
+    .estado-vencida {
+        background: #F8D7DA;
+        color: #842029;
+    }
+
+    .estado-hoy {
+        background: #FFF0C2;
+        color: #795600;
+    }
+
+    .estado-normal {
+        background: #E8ECEF;
+        color: #39434A;
+    }
+
+    .btn-principal {
+        background: #24483D;
+        color: white;
+        border: none;
+    }
+
+    .btn-principal:hover {
+        background: #19372E;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid solicitudes-container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="solicitudes-title">Administración de solicitudes</h1>
+            <p class="text-muted mb-0">
+                Consultá y administrá las solicitudes registradas.
+            </p>
+        </div>
+
+        <a asp-page="/Solicitudes/Create" class="btn btn-principal">
+            Nueva solicitud
+        </a>
+    </div>
+
+    @if (TempData["Exito"] is string mensajeExito)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @mensajeExito
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] is string mensajeError)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @mensajeError
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    <div class="solicitudes-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 solicitudes-title mb-0">Solicitudes registradas</h2>
+            <span class="text-muted small">Total: @Model.Total</span>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 mb-3 small">
+            <span><span class="estado estado-nueva">Nueva</span></span>
+            <span><span class="estado estado-hoy">Vence hoy</span></span>
+            <span><span class="estado estado-vencida">Vencida</span></span>
+        </div>
+
+
+        @if (!Model.Solicitudes.Any())
+        {
+            <div class="alert alert-light border mb-0">
+                No hay solicitudes registradas.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Consecutivo</th>
+                            <th>Título</th>
+                            <th>Representante</th>
+                            <th>Estado</th>
+                            <th>Ingreso</th>
+                            <th>Respuesta</th>
+                            <th>Inicio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var solicitud in Model.Solicitudes)
+                        {
+                            var identificador =
+                                solicitud.IdentificadorEstado?.ToUpperInvariant() ?? "";
+
+                            var claseEstado = solicitud.VenceHoy
+                                ? "estado-hoy"
+                                : identificador switch
+                                {
+                                    "NUEVA" => "estado-nueva",
+                                    "VENCIDA" => "estado-vencida",
+                                    _ => "estado-normal"
+                                };
+
+                            <tr>
+                                <td>@solicitud.ConsecutivoOficio</td>
+                                <td>
+                                    <div class="fw-semibold">@solicitud.Titulo</div>
+
+                                    @if (!string.IsNullOrWhiteSpace(solicitud.Descripcion))
+                                    {
+                                        <div class="text-muted small">
+                                            @(solicitud.Descripcion.Length > 90
+                                                ? solicitud.Descripcion[..90] + "..."
+                                                : solicitud.Descripcion)
+                                        </div>
+                                    }
+                                </td>
+
+                                <td>
+                                    @(solicitud.NombreRepresentante ?? "Sin asignar")
+                                </td>
+
+                                <td>
+                                    <span class="estado @claseEstado">
+                                        @(solicitud.VenceHoy
+                                            ? "Vence hoy"
+                                            : solicitud.NombreEstado ?? "Sin estado")
+                                    </span>
+                                </td>
+
+                                <td>@solicitud.FechaIngreso.ToString("dd/MM/yyyy")</td>
+
+                                <td>
+                                    @(solicitud.FechaRespuesta?.ToString("dd/MM/yyyy") ?? "—")
+                                </td>
+
+                                <td>
+                                    @(solicitud.FechaInicio?.ToString("dd/MM/yyyy") ?? "—")
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a asp-page="/Solicitudes/Edit"
+                                           asp-route-id="@solicitud.SolicitudID"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            Editar
+                                        </a>
+
+                                        <form method="post"
+                                              asp-page-handler="Eliminar"
+                                              asp-route-id="@solicitud.SolicitudID"
+                                              asp-route-pagina="@Model.Pagina"
+                                              onsubmit="return confirm('¿Deseás eliminar esta solicitud?');">
+                                            <button type="submit"
+                                                    class="btn btn-outline-danger btn-sm">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+            <span class="text-muted small">
+                Página @Model.Pagina de @Model.TotalPaginas
+            </span>
+
+            <nav aria-label="Paginación de solicitudes">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(Model.Pagina <= 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-page="/Solicitudes/Index"
+                           asp-route-pagina="@(Model.Pagina - 1)">
+                            Anterior
+                        </a>
+                    </li>
+
+                    @for (var pagina = 1; pagina <= Model.TotalPaginas; pagina++)
+                    {
+                        <li class="page-item @(pagina == Model.Pagina ? "active" : "")">
+                            <a class="page-link"
+                               asp-page="/Solicitudes/Index"
+                               asp-route-pagina="@pagina">
+                                @pagina
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.Pagina >= Model.TotalPaginas ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-page="/Solicitudes/Index"
+                           asp-route-pagina="@(Model.Pagina + 1)">
+                            Siguiente
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

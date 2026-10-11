@@ -1,0 +1,81 @@
+/* USR1 - Pantalla de login */
+
+.login-fondo {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f5f7fb;
+    background-image: linear-gradient(180deg, #243b6b 0, #243b6b 42%, #f5f7fb 42%);
+}
+
+.login-tarjeta {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 36px 32px;
+    box-shadow: 0 12px 32px rgba(36, 59, 107, 0.18);
+}
+
+.login-encabezado {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.login-logo {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 12px;
+}
+
+.login-encabezado h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #243b6b;
+    margin: 0;
+}
+
+.login-encabezado p {
+    font-size: 14px;
+    color: #777;
+    margin: 4px 0 0;
+}
+
+.login-tarjeta .form-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.login-tarjeta .form-control {
+    padding: 10px 12px;
+    border-radius: 8px;
+}
+
+    .login-tarjeta .form-control:focus {
+        border-color: #243b6b;
+        box-shadow: 0 0 0 3px rgba(36, 59, 107, 0.15);
+    }
+
+.btn-login {
+    background-color: #243b6b;
+    color: #ffffff;
+    padding: 11px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+    .btn-login:hover,
+    .btn-login:focus {
+        background-color: #1b2d53;
+        color: #ffffff;
+    }
+
+.login-tarjeta .alert {
+    font-size: 14px;
+    padding: 10px 14px;
+}
