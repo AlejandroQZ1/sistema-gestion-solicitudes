@@ -18,7 +18,16 @@ namespace AdministracionSoluciones.Repository
 
         public IDbConnection CreateConnection()
         {
-            return new MySqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            var connectionString =
+                _configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "Falta la configuración externa ConnectionStrings:DefaultConnection.");
+            }
+
+            return new MySqlConnection(connectionString);
         }
     }
 }

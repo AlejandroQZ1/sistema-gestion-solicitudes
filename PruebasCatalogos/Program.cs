@@ -12,7 +12,7 @@ var connection = Environment.GetEnvironmentVariable("CATALOGOS_TEST_CONNECTION")
     ?? throw new InvalidOperationException("Defina CATALOGOS_TEST_CONNECTION para una base temporal.");
 var factory = new TestFactory(connection);
 var repository = new CatalogoRepository(factory);
-var service = new CatalogoService(repository, new BitacoraService(new BitacoraRepository(factory)), NullLogger<CatalogoService>.Instance);
+var service = new CatalogoService(repository, new BitacoraService(new BitacoraRepository(factory), NullLogger<BitacoraService>.Instance), NullLogger<CatalogoService>.Instance);
 using var db = factory.CreateConnection();
 var pruebas = 0;
 void Check(bool condition, string description) {
@@ -41,13 +41,12 @@ Check((await service.GuardarAsync(TipoCatalogo.Estados, estado, "pruebas")).Exit
 Check(!(await service.GuardarAsync(TipoCatalogo.Estados, new() { Nombre = "Duplicado", Identificador = "REVISION" }, "pruebas")).Exito, "Identificador único");
 estado.Nombre = "En evaluación";
 Check((await service.GuardarAsync(TipoCatalogo.Estados, estado, "pruebas")).Exito && (await service.ObtenerAsync(TipoCatalogo.Estados, estado.Id))!.Nombre == estado.Nombre, "Editar estado");
-await db.ExecuteAsync("CREATE TABLE solicitudes_prueba (Id INT PRIMARY KEY, RepresentanteID INT, EstadoSolicitudID INT, FOREIGN KEY (RepresentanteID) REFERENCES representantes(RepresentanteID) ON DELETE RESTRICT, FOREIGN KEY (EstadoSolicitudID) REFERENCES estados_solicitud(EstadoSolicitudID) ON DELETE RESTRICT)");
-await db.ExecuteAsync("INSERT INTO solicitudes_prueba VALUES (1, @RepresentanteID, @EstadoSolicitudID)", new { RepresentanteID = persona.Id, EstadoSolicitudID = estado.Id });
+await db.ExecuteAsync("INSERT INTO solicitudes (ConsecutivoOficio, Titulo, FechaIngreso, RepresentanteID, EstadoSolicitudID) VALUES ('PRUEBA-SOL3-SOL4', 'Solicitud de integración', CURRENT_DATE(), @RepresentanteID, @EstadoSolicitudID)", new { RepresentanteID = persona.Id, EstadoSolicitudID = estado.Id });
 foreach (var caso in new[] { (TipoCatalogo.Representantes, persona.Id), (TipoCatalogo.Estados, estado.Id) }) {
     var resultado = await service.GuardarAsync(caso.Item1, new() { Id = caso.Id }, "pruebas", true);
     Check(!resultado.Exito && resultado.Mensaje == "No se puede eliminar un registro con datos relacionados.", "Bloqueo de eliminación relacionada: " + caso.Item1);
 }
-await db.ExecuteAsync("DELETE FROM solicitudes_prueba");
+await db.ExecuteAsync("DELETE FROM solicitudes WHERE ConsecutivoOficio='PRUEBA-SOL3-SOL4'");
 Check((await service.GuardarAsync(TipoCatalogo.Representantes, persona, "pruebas", true)).Exito && await service.ObtenerAsync(TipoCatalogo.Representantes, persona.Id) == null, "Eliminar representante sin relaciones");
 Check((await service.GuardarAsync(TipoCatalogo.Estados, estado, "pruebas", true)).Exito && await service.ObtenerAsync(TipoCatalogo.Estados, estado.Id) == null, "Eliminar estado sin relaciones");
 Check(!(await service.GuardarAsync(TipoCatalogo.Estados, estado, "pruebas", true)).Exito, "Registro inexistente");

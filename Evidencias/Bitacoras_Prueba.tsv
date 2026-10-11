@@ -1,0 +1,45 @@
+Fecha	Usuario	Modulo	Accion	Detalle
+2026-10-11 13:21:37	pruebas	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":1,"Nombre":"Persona 00","Email":"persona0@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":2,"Nombre":"Persona 01","Email":"persona1@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":3,"Nombre":"Persona 02","Email":"persona2@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":4,"Nombre":"Persona 03","Email":"persona3@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":5,"Nombre":"Persona 04","Email":"persona4@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":6,"Nombre":"Persona 05","Email":"persona5@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":7,"Nombre":"Persona 06","Email":"persona6@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":8,"Nombre":"Persona 07","Email":"persona7@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":9,"Nombre":"Persona 08","Email":"persona8@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":10,"Nombre":"Persona 09","Email":"persona9@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":11,"Nombre":"Persona 10","Email":"persona10@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	Crear	{"Id":12,"Nombre":"Persona 11","Email":"persona11@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:21:37	pruebas	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:21:37	pruebas	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:21:37	pruebas	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:21:37	pruebas	Representantes	Actualizar	{"Anterior":{"Id":1,"Nombre":"Persona 00","Email":"persona0@ejemplo.com"},"Actual":{"Id":1,"Nombre":"Nombre actualizado","Email":"persona0@ejemplo.com"}}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":6,"Identificador":"REVISION","Nombre":"En revisi\\u00F3n"}
+2026-10-11 13:21:37	pruebas	Estados	Actualizar	{"Anterior":{"Id":6,"Identificador":"REVISION","Nombre":"En revisi\\u00F3n"},"Actual":{"Id":6,"Identificador":"REVISION","Nombre":"En evaluaci\\u00F3n"}}
+2026-10-11 13:21:37	pruebas	Representantes	Eliminar	{"Id":1,"Nombre":"Nombre actualizado","Email":"persona0@ejemplo.com"}
+2026-10-11 13:21:37	pruebas	Estados	Eliminar	{"Id":6,"Identificador":"REVISION","Nombre":"En evaluaci\\u00F3n"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":8,"Identificador":"EXTRA0","Nombre":"Extra 0"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":9,"Identificador":"EXTRA1","Nombre":"Extra 1"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":10,"Identificador":"EXTRA2","Nombre":"Extra 2"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":11,"Identificador":"EXTRA3","Nombre":"Extra 3"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":12,"Identificador":"EXTRA4","Nombre":"Extra 4"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":13,"Identificador":"EXTRA5","Nombre":"Extra 5"}
+2026-10-11 13:21:37	pruebas	Estados	Crear	{"Id":14,"Identificador":"EXTRA6","Nombre":"Extra 6"}
+2026-10-11 13:21:37	pruebas	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:21:37	pruebas	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:22:38	evidencia	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:22:52	evidencia	Representantes	Crear	{"Id":14,"Nombre":"Ana Prueba","Email":"ana@example.com"}
+2026-10-11 13:22:52	evidencia	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:23:00	evidencia	Representantes	Actualizar	{"Anterior":{"Id":14,"Nombre":"Ana Prueba","Email":"ana@example.com"},"Actual":{"Id":14,"Nombre":"Ana Actualizada","Email":"ana@example.com"}}
+2026-10-11 13:23:00	evidencia	Representantes	El usuario consulta Representantes	NULL
+2026-10-11 13:23:30	evidencia	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:23:51	evidencia	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:23:54	evidencia	Estados	Crear	{"Id":15,"Identificador":"APROBADA_PRUEBA","Nombre":"Aprobada de prueba"}
+2026-10-11 13:23:54	evidencia	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:24:04	evidencia	Estados	Actualizar	{"Anterior":{"Id":15,"Identificador":"APROBADA_PRUEBA","Nombre":"Aprobada de prueba"},"Actual":{"Id":15,"Identificador":"APROBADA_PRUEBA","Nombre":"Aprobada actualizada"}}
+2026-10-11 13:24:04	evidencia	Estados	El usuario consulta Estados	NULL
+2026-10-11 13:24:06	evidencia	Estados	Eliminar	{"Id":15,"Identificador":"APROBADA_PRUEBA","Nombre":"Aprobada actualizada"}
+2026-10-11 13:24:06	evidencia	Estados	El usuario consulta Estados	NULL

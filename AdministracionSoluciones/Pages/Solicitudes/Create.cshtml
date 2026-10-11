@@ -1,0 +1,204 @@
+﻿
+@page
+@model AdministracionSoluciones.Pages.Solicitudes.CreateModel
+
+@{
+    ViewData["Title"] = "Nueva solicitud";
+}
+
+<style>
+    body {
+        background-color: #FAF8F3;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .solicitud-container {
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+
+    .solicitud-card {
+        background: #FFFFFF;
+        border: 1px solid #E6E1D8;
+        border-radius: 12px;
+        padding: 28px;
+    }
+
+    .solicitud-title {
+        color: #24483D;
+        font-weight: 700;
+    }
+
+    .form-label {
+        color: #343A35;
+        font-weight: 600;
+    }
+
+    .btn-principal {
+        background-color: #24483D;
+        color: white;
+        border: none;
+    }
+
+    .btn-principal:hover {
+        background-color: #19372E;
+        color: white;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container solicitud-container">
+    <div class="mb-4">
+        <h1 class="solicitud-title">Nueva solicitud</h1>
+        <p class="text-muted">
+            Completá la información para registrar una solicitud.
+        </p>
+    </div>
+
+    <div class="solicitud-card">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"
+                 role="alert"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.ConsecutivoOficio"
+                           class="form-label">Consecutivo de oficio *</label>
+                    <input asp-for="Solicitud.ConsecutivoOficio"
+                           class="form-control"
+                           maxlength="100"
+                           required />
+                    <span asp-validation-for="Solicitud.ConsecutivoOficio"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.Titulo"
+                           class="form-label">Título *</label>
+                    <input asp-for="Solicitud.Titulo"
+                           class="form-control"
+                           maxlength="200"
+                           required />
+                    <span asp-validation-for="Solicitud.Titulo"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Solicitud.Descripcion"
+                           class="form-label">Descripción</label>
+                    <textarea asp-for="Solicitud.Descripcion"
+                              class="form-control"
+                              rows="3"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.RepresentanteID"
+                           class="form-label">Representante</label>
+                    <select asp-for="Solicitud.RepresentanteID"
+                            class="form-select">
+                        <option value="">Seleccione un representante</option>
+                        @foreach (var representante in Model.Representantes)
+                        {
+                            <option value="@representante.Id">
+                                @representante.Nombre
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="Solicitud.RepresentanteID"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.FechaIngreso"
+                           class="form-label">Fecha de ingreso *</label>
+                    <input asp-for="Solicitud.FechaIngreso"
+                           type="date"
+                           class="form-control"
+                           required />
+                    <span asp-validation-for="Solicitud.FechaIngreso"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.DocumentoRespuesta"
+                           class="form-label">Documento de respuesta</label>
+                    <input asp-for="Solicitud.DocumentoRespuesta"
+                           class="form-control"
+                           maxlength="255" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.FechaRespuesta"
+                           class="form-label">Fecha de respuesta</label>
+                    <input asp-for="Solicitud.FechaRespuesta"
+                           type="date"
+                           class="form-control" />
+                    <span asp-validation-for="Solicitud.FechaRespuesta"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.DocumentoInicio"
+                           class="form-label">Documento de inicio</label>
+                    <input asp-for="Solicitud.DocumentoInicio"
+                           class="form-control"
+                           maxlength="255" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Solicitud.FechaInicio"
+                           class="form-label">Fecha de inicio</label>
+                    <input asp-for="Solicitud.FechaInicio"
+                           type="date"
+                           class="form-control" />
+                    <span asp-validation-for="Solicitud.FechaInicio"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Solicitud.Observaciones"
+                           class="form-label">Observaciones</label>
+                    <textarea asp-for="Solicitud.Observaciones"
+                              class="form-control"
+                              rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="alert alert-light border mt-4 mb-4">
+                El estado inicial se asignará automáticamente como
+                <strong>NUEVA</strong>.
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-end">
+                <a asp-page="/Solicitudes/Index"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-principal px-4"
+                        id="btnGuardar">
+                    Guardar solicitud
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function () {
+            if (this.checkValidity()) {
+                const boton = document.getElementById("btnGuardar");
+                boton.disabled = true;
+                boton.textContent = "Guardando...";
+            }
+        });
+    </script>
+}

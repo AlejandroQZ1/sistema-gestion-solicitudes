@@ -8,7 +8,7 @@ namespace AdministracionSoluciones.Services
     /// <summary>
     /// Cifrado de contraseñas con AES-GCM de 256 bits (USR4).
     /// El texto cifrado se guarda en Base64 con el formato: nonce (12 bytes) + tag (16 bytes) + datos.
-    /// La clave (32 bytes en Base64) se lee de appsettings.json, sección "Cifrado:Clave".
+    /// La clave (32 bytes en Base64) se lee de configuración externa en "Cifrado:Clave".
     /// Todo el equipo debe usar la MISMA clave, o no se podrán leer las contraseñas guardadas.
     /// </summary>
     public class CifradoService : ICifradoService
@@ -20,7 +20,7 @@ namespace AdministracionSoluciones.Services
         public CifradoService(IConfiguration configuration)
         {
             var claveBase64 = configuration["Cifrado:Clave"]
-                ?? throw new InvalidOperationException("Falta la configuración 'Cifrado:Clave' en appsettings.json.");
+                ?? throw new InvalidOperationException("Falta la configuración externa 'Cifrado:Clave'.");
 
             _clave = Convert.FromBase64String(claveBase64);
             if (_clave.Length != 32)
@@ -70,11 +70,14 @@ namespace AdministracionSoluciones.Services
                 var escrita = Encoding.UTF8.GetBytes(contrasenaEscrita);
                 return CryptographicOperations.FixedTimeEquals(real, escrita);
             }
+
             catch (Exception ex) when (ex is FormatException or CryptographicException or ArgumentException)
+
             {
                 // Dato dañado o cifrado con otra clave
                 return false;
             }
         }
     }
+
 }

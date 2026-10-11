@@ -1,0 +1,86 @@
+@page "{id:int}"
+@model AdministracionSoluciones.Pages.Solicitudes.EditModel
+@{
+    ViewData["Title"] = "Editar solicitud";
+}
+
+<div class="container py-4" style="max-width: 1000px">
+    <h1 class="h3 mb-3">Editar solicitud</h1>
+    <form method="post" asp-route-id="@Model.Solicitud.SolicitudID">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        <input asp-for="Solicitud.SolicitudID" type="hidden" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Solicitud.ConsecutivoOficio" class="form-label">Consecutivo de oficio *</label>
+                <input asp-for="Solicitud.ConsecutivoOficio" class="form-control" maxlength="100" required />
+                <span asp-validation-for="Solicitud.ConsecutivoOficio" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.Titulo" class="form-label">Título *</label>
+                <input asp-for="Solicitud.Titulo" class="form-control" maxlength="200" required />
+                <span asp-validation-for="Solicitud.Titulo" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Solicitud.Descripcion" class="form-label">Descripción</label>
+                <textarea asp-for="Solicitud.Descripcion" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.RepresentanteID" class="form-label">Representante</label>
+                <select asp-for="Solicitud.RepresentanteID" class="form-select">
+                    <option value="">Sin asignar</option>
+                    @foreach (var representante in Model.Representantes)
+                    {
+                        <option value="@representante.Id">@representante.Nombre</option>
+                    }
+                </select>
+                <span asp-validation-for="Solicitud.RepresentanteID" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.EstadoSolicitudID" class="form-label">Estado *</label>
+                <select asp-for="Solicitud.EstadoSolicitudID" class="form-select" required>
+                    <option value="">Seleccione un estado</option>
+                    @foreach (var estado in Model.Estados)
+                    {
+                        <option value="@estado.Id">@estado.Nombre</option>
+                    }
+                </select>
+                <span asp-validation-for="Solicitud.EstadoSolicitudID" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.FechaIngreso" class="form-label">Fecha de ingreso *</label>
+                <input asp-for="Solicitud.FechaIngreso" type="date" class="form-control" required />
+                <span asp-validation-for="Solicitud.FechaIngreso" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.FechaRespuesta" class="form-label">Fecha de respuesta</label>
+                <input asp-for="Solicitud.FechaRespuesta" type="date" class="form-control" />
+                <span asp-validation-for="Solicitud.FechaRespuesta" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.DocumentoRespuesta" class="form-label">Documento de respuesta</label>
+                <input asp-for="Solicitud.DocumentoRespuesta" class="form-control" maxlength="255" />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.FechaInicio" class="form-label">Fecha de inicio</label>
+                <input asp-for="Solicitud.FechaInicio" type="date" class="form-control" />
+                <span asp-validation-for="Solicitud.FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Solicitud.DocumentoInicio" class="form-label">Documento de inicio</label>
+                <input asp-for="Solicitud.DocumentoInicio" class="form-control" maxlength="255" />
+            </div>
+            <div class="col-12">
+                <label asp-for="Solicitud.Observaciones" class="form-label">Observaciones</label>
+                <textarea asp-for="Solicitud.Observaciones" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-end mt-4">
+            <a asp-page="/Solicitudes/Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
