@@ -37,6 +37,9 @@ namespace AdministracionSoluciones.Entities
         [Display(Name = "Observaciones")]
         public string? Observaciones { get; set; }
 
+        public int EstadoSolicitudID { get; set; }
+
+        // Nombre del estado obtenido del catálogo.
         [Display(Name = "Estado")]
         public string Estado { get; set; } = "Nueva";
 

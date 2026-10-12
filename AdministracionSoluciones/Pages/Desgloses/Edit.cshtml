@@ -25,18 +25,11 @@
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Información del Desglose</h6>
-                @if (Model.Desglose.Asignado)
-                {
-                    <span class="badge bg-warning text-dark">
-                        <i class="bi bi-lock-fill me-1"></i> Registro con asignación activa
-                    </span>
-                }
             </div>
             <div class="card-body p-4">
                 <form method="post" id="formDesgloseEdit">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                     <input type="hidden" asp-for="Desglose.DesgloseID" />
-                    <input type="hidden" asp-for="Desglose.Asignado" />
 
                     <!-- Fila 1: Solicitud -->
                     <div class="mb-3">
@@ -111,19 +104,6 @@
                         <label asp-for="Desglose.Observaciones" class="form-label fw-bold">Observaciones</label>
                         <textarea asp-for="Desglose.Observaciones" rows="3" class="form-control" placeholder="Detalle adicional sobre el trabajo mensual realizado..."></textarea>
                         <span asp-validation-for="Desglose.Observaciones" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Fila 6: Estado de Asignación (Criterio SOL2) -->
-                    <div class="mb-4 p-3 bg-light rounded border">
-                        <div class="form-check form-switch">
-                            <input asp-for="Desglose.Asignado" class="form-check-input" type="checkbox" id="checkAsignadoEdit" />
-                            <label asp-for="Desglose.Asignado" class="form-check-label fw-bold" for="checkAsignadoEdit">
-                                Registro Asignado (Con datos relacionados)
-                            </label>
-                        </div>
-                        <div class="form-text small text-muted">
-                            Si está marcado como asignado, el sistema impedirá su eliminación mostrando: <em>"No se puede eliminar un registro con datos relacionados."</em>
-                        </div>
                     </div>
 
                     <!-- BOTONES DE ACCIÓN (Flujo de pantallas Pág. 15) -->

@@ -94,7 +94,6 @@
                         <th class="text-end">IVA (13%)</th>
                         <th class="text-end">Total</th>
                         <th class="text-center">% Cobro</th>
-                        <th class="text-center">Asignación</th>
                         <th>Observaciones</th>
                         <th class="text-center" style="min-width: 140px;">Acciones</th>
                     </tr>
@@ -103,7 +102,7 @@
                     @if (!Model.Desgloses.Any())
                     {
                         <tr>
-                            <td colspan="10" class="text-center py-5 text-muted">
+                            <td colspan="9" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 No se encontraron registros de desgloses.
                             </td>
@@ -141,20 +140,6 @@
                             <td class="text-center">
                                 <span class="badge bg-info text-dark">@d.PorcentajeCobro.ToString("N0")%</span>
                             </td>
-                            <td class="text-center">
-                                @if (d.Asignado)
-                                {
-                                    <span class="badge bg-warning text-dark" title="Tiene datos relacionados (protegido)">
-                                        <i class="bi bi-lock-fill me-1"></i> Asignado
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success" title="Sin asignar (se puede eliminar)">
-                                        <i class="bi bi-unlock me-1"></i> Sin asignar
-                                    </span>
-                                }
-                            </td>
                             <td>
                                 <span class="text-muted small text-truncate d-inline-block" style="max-width: 180px;" title="@d.Observaciones">
                                     @(string.IsNullOrWhiteSpace(d.Observaciones) ? "—" : d.Observaciones)
@@ -171,7 +156,7 @@
                                         data-bs-toggle="modal" 
                                         data-bs-target="#modalConfirmarEliminar"
                                         data-id="@d.DesgloseID"
-                                        data-descripcion="Desglose de @d.NombreMes @d.Anio por @d.Total.ToString("C2") — @(d.Asignado ? "⚠️ ESTADO: ASIGNADO (Tiene datos relacionados)" : "Estado: Sin asignar")"
+                                        data-descripcion="Desglose de @d.NombreMes @d.Anio por @d.Total.ToString("C2")"
                                         title="Eliminar desglose">
                                     <i class="bi bi-trash"></i> Eliminar
                                 </button>

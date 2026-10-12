@@ -107,19 +107,6 @@
                         <span asp-validation-for="Desglose.Observaciones" class="text-danger small"></span>
                     </div>
 
-                    <!-- Fila 6: Estado de Asignación (Criterio SOL2) -->
-                    <div class="mb-4 p-3 bg-light rounded border">
-                        <div class="form-check form-switch">
-                            <input asp-for="Desglose.Asignado" class="form-check-input" type="checkbox" id="checkAsignado" />
-                            <label asp-for="Desglose.Asignado" class="form-check-label fw-bold" for="checkAsignado">
-                                Marcar como asignado (con datos relacionados)
-                            </label>
-                        </div>
-                        <div class="form-text small text-muted">
-                            Si está marcado como asignado, el sistema impedirá su eliminación mostrando: <em>"No se puede eliminar un registro con datos relacionados."</em>
-                        </div>
-                    </div>
-
                     <!-- BOTONES DE ACCIÓN (Flujo de pantallas Pág. 15) -->
                     <div class="d-flex justify-content-end gap-2 border-top pt-3">
                         <a asp-page="Index" asp-route-solicitudId="@Model.Desglose.SolicitudID" class="btn btn-outline-secondary px-4">

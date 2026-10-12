@@ -1,4 +1,4 @@
-using System.Data.Common;
+using MySqlConnector;
 using AdministracionSoluciones.Entities;
 using AdministracionSoluciones.Repository;
 using AdministracionSoluciones.Services.Abstract;
@@ -7,7 +7,7 @@ namespace AdministracionSoluciones.Services
 {
     /// <summary>
     /// SOL2 - Reglas de negocio para la administración de desgloses de solicitudes.
-    /// Incluye cálculo de IVA (13%), validación de datos relacionados y registro en bitácora.
+    /// Valida los datos y registra las operaciones en bitácora.
     /// </summary>
     public class DesgloseService : IDesgloseService
     {
@@ -80,12 +80,13 @@ namespace AdministracionSoluciones.Services
                     return error;
                 }
 
-                // Cálculo automático de IVA (13%) y Total (Monto + IVA)
-                CalcularTotales(desglose);
-
                 desglose.DesgloseID = await _desgloseRepository.InsertAsync(desglose);
 
-                await _bitacoraService.RegistrarAsync(usuarioActual, Modulo, "Crear", DatosDesglose(desglose));
+                // La bitácora utiliza los importes calculados por la base.
+                var guardado = await _desgloseRepository.GetByIdAsync(desglose.DesgloseID)
+                    ?? throw new InvalidOperationException("No se pudo consultar el desglose guardado.");
+
+                await _bitacoraService.RegistrarAsync(usuarioActual, Modulo, "Crear", DatosDesglose(guardado));
                 return Resultado.Ok("El desglose se registró correctamente.");
             }
             catch (Exception ex)
@@ -111,14 +112,15 @@ namespace AdministracionSoluciones.Services
                     return error;
                 }
 
-                CalcularTotales(datos);
-
                 await _desgloseRepository.UpdateAsync(datos);
+
+                var guardado = await _desgloseRepository.GetByIdAsync(datos.DesgloseID)
+                    ?? throw new InvalidOperationException("No se pudo consultar el desglose guardado.");
 
                 await _bitacoraService.RegistrarAsync(usuarioActual, Modulo, "Actualizar", new
                 {
                     Anterior = DatosDesglose(anterior),
-                    Actual = DatosDesglose(datos)
+                    Actual = DatosDesglose(guardado)
                 });
 
                 return Resultado.Ok("El desglose se actualizó correctamente.");
@@ -140,17 +142,12 @@ namespace AdministracionSoluciones.Services
                     return Resultado.Error("El desglose no existe.");
                 }
 
-                // Criterio SOL2: Solo se puede eliminar un registro si no ha sido asignado.
-                if (await _desgloseRepository.TieneDatosRelacionadosAsync(id))
-                {
-                    return Resultado.Error(MensajeDatosRelacionados);
-                }
-
+                // Las claves foráneas impiden borrar registros con datos relacionados.
                 try
                 {
                     await _desgloseRepository.DeleteAsync(id);
                 }
-                catch (DbException)
+                catch (MySqlException ex) when (ex.Number == 1451)
                 {
                     return Resultado.Error(MensajeDatosRelacionados);
                 }
@@ -206,12 +203,6 @@ namespace AdministracionSoluciones.Services
             return null;
         }
 
-        private static void CalcularTotales(Desglose d)
-        {
-            d.IVA = Math.Round(d.Monto * 0.13m, 2);
-            d.Total = Math.Round(d.Monto + d.IVA, 2);
-        }
-
         private static object DatosDesglose(Desglose d) => new
         {
             d.DesgloseID,
@@ -223,8 +214,7 @@ namespace AdministracionSoluciones.Services
             d.IVA,
             d.Total,
             d.Observaciones,
-            d.PorcentajeCobro,
-            d.Asignado
+            d.PorcentajeCobro
         };
     }
 }

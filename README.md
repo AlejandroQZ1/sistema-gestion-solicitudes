@@ -1,9 +1,11 @@
-# sistema-gestion-solicitudes
+# Sistema de gestión de solicitudes
 
-Esta rama contiene la solución entregada en el ZIP de José para USR3 (plantilla), SOL2 (desgloses) y SOL7 (reporte de facturación), junto con sus dependencias de seguridad.
+Aplicación ASP.NET Core 8 con Razor Pages, Dapper y Bootstrap.
 
-Requiere .NET 8 y MySQL. Las credenciales y la clave de cifrado se configuran fuera del repositorio mediante las variables de entorno `ConnectionStrings__DefaultConnection`, `Cifrado__Clave` y `AdministradorInicial__Contrasena`. Para usuarios existentes, la clave de cifrado debe coincidir con la utilizada al guardar sus contraseñas.
+La conexión, la clave de cifrado y la contraseña del administrador inicial se configuran fuera del repositorio mediante `ConnectionStrings__DefaultConnection`, `Cifrado__Clave` y `AdministradorInicial__Contrasena`. La clave de cifrado debe coincidir con la usada para las contraseñas existentes.
 
-La solución se compila con `dotnet build AdministracionSoluciones.sln`.
+Compilación: `dotnet build AdministracionSoluciones.sln`.
 
-Los scripts de `BaseDatos` corresponden al esquema de esta entrega. La adaptación al esquema compartido y la integración con los otros módulos del equipo están pendientes; estos scripts no migran una base existente.
+El módulo de desgloses utiliza la base existente: los estados se consultan mediante `EstadoSolicitudID` y las columnas `IVA` y `Total` se calculan en la base. No requiere cambios de tablas.
+
+Los scripts de `BaseDatos` conservan el esquema inicial. No son una migración y no deben ejecutarse sobre la base de Plesk; el script `02_Solicitudes_Desgloses.sql` no corresponde al esquema que usa actualmente el módulo.
