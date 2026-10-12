@@ -1,0 +1,168 @@
+@page
+@model AdministracionSoluciones.Pages.Reportes.MontosFacturacionModel
+@{
+    ViewData["Title"] = "Reporte de Facturación Mensual";
+}
+
+<!-- ENCABEZADO Y ACCIONES (SOL7) -->
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3 no-print">
+    <div>
+        <h2 class="h3 mb-1 text-gray-800 font-weight-bold">
+            <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+            Reporte de Facturación Mensual
+        </h2>
+        <p class="text-muted mb-0">
+            Monto total que se facturará por mes entre todas las solicitudes (Criterio HU SOL7).
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Imprimir Reporte
+        </button>
+    </div>
+</div>
+
+<!-- ENCABEZADO EXCLUSIVO PARA IMPRESIÓN (PRINT-ONLY) -->
+<div class="d-none d-print-block mb-4 text-center border-bottom pb-3">
+    <h2 class="fw-bold mb-1">SIGES - Sistema de Administración de Solicitudes</h2>
+    <h4 class="text-secondary mb-1">Reporte de Montos a Facturar por Mes</h4>
+    <p class="mb-0 text-muted">Período: <strong>@Model.Reporte.NombreMes @Model.Reporte.Anio</strong> | Generado: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+</div>
+
+<!-- FILTRO DE PARÁMETROS: MES Y AÑO (Criterio SOL7) -->
+<div class="card shadow-sm border-0 mb-4 bg-white no-print">
+    <div class="card-header bg-white py-3 border-bottom">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="bi bi-calendar-event me-1"></i> Parámetros del Reporte
+        </h6>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4 col-sm-6">
+                <label for="selectMes" class="form-label fw-bold text-secondary">Mes a consultar</label>
+                <select name="Mes" id="selectMes" asp-items="Model.MesesSelectList" class="form-select"></select>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <label for="inputAnio" class="form-label fw-bold text-secondary">Año</label>
+                <input type="number" name="Anio" id="inputAnio" value="@Model.Anio" min="2000" max="2100" class="form-control" />
+            </div>
+            <div class="col-md-4 col-sm-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100" style="background-color: #243b6b; border-color: #243b6b;">
+                    <i class="bi bi-search me-1"></i> Generar Reporte
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TARJETAS MÉTRICAS EJECUTIVAS (ESTILO SB ADMIN 2 - USR3 & SOL7) -->
+<div class="row mb-4">
+    <div class="col-xl-4 col-md-6 mb-3">
+        <div class="card card-kpi border-primary h-100">
+            <div class="card-kpi-title text-primary">Total Monto Base (Subtotal)</div>
+            <div class="card-kpi-value">@Model.Reporte.TotalMonto.ToString("C2")</div>
+            <div class="text-muted small mt-1">Período: @Model.Reporte.NombreMes @Model.Reporte.Anio</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6 mb-3">
+        <div class="card card-kpi border-info h-100">
+            <div class="card-kpi-title text-info">Total IVA (13%)</div>
+            <div class="card-kpi-value">@Model.Reporte.TotalIVA.ToString("C2")</div>
+            <div class="text-muted small mt-1">Impuesto al Valor Agregado acumulado</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-12 mb-3">
+        <div class="card card-kpi border-success h-100">
+            <div class="card-kpi-title text-success">Total a Facturar en el Mes</div>
+            <div class="card-kpi-value text-success">@Model.Reporte.TotalGeneral.ToString("C2")</div>
+            <div class="text-muted small mt-1">Suma total (Monto + IVA) de todas las solicitudes</div>
+        </div>
+    </div>
+</div>
+
+<!-- TABLA DE DETALLE POR SOLICITUD (Criterio SOL7) -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="bi bi-list-check me-1"></i> 
+            Detalle por Solicitud — @Model.Reporte.NombreMes @Model.Reporte.Anio
+        </h6>
+        <span class="badge bg-secondary">@Model.Reporte.Items.Count() solicitud(es) facturable(s)</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table tabla-siges align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 180px;">Consecutivo de Oficio</th>
+                        <th>Título de la Solicitud</th>
+                        <th class="text-center" style="width: 100px;">Mes</th>
+                        <th class="text-center" style="width: 80px;">Año</th>
+                        <th class="text-end" style="width: 160px;">Monto</th>
+                        <th class="text-end" style="width: 150px;">IVA (13%)</th>
+                        <th class="text-end" style="width: 170px;">Total por Solicitud</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Reporte.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-file-earmark-x fs-1 d-block mb-2"></i>
+                                No se registran montos a facturar para <strong>@Model.Reporte.NombreMes @Model.Reporte.Anio</strong>.
+                                <div class="small mt-1">Pruebe seleccionando otro mes o año en los filtros superiores.</div>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model.Reporte.Items)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.ConsecutivoOficio</strong>
+                            </td>
+                            <td>
+                                @item.Titulo
+                            </td>
+                            <td class="text-center">
+                                @item.NombreMes
+                            </td>
+                            <td class="text-center">
+                                @item.Anio
+                            </td>
+                            <td class="text-end">
+                                @item.Monto.ToString("C2")
+                            </td>
+                            <td class="text-end text-muted">
+                                @item.IVA.ToString("C2")
+                            </td>
+                            <td class="text-end fw-bold text-primary">
+                                @item.Total.ToString("C2")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+                <!-- FILA DE TOTALES GENERALES (Criterio SOL7: "Finalmente se debe mostrar la suma de monto, IVA y Total de todas las solicitudes") -->
+                @if (Model.Reporte.Items.Any())
+                {
+                    <tfoot class="table-group-divider">
+                        <tr class="table-light">
+                            <td colspan="4" class="text-end fw-bold text-uppercase fs-6">
+                                Totales del Mes (@Model.Reporte.NombreMes @Model.Reporte.Anio):
+                            </td>
+                            <td class="text-end fw-bold text-dark fs-6">
+                                @Model.Reporte.TotalMonto.ToString("C2")
+                            </td>
+                            <td class="text-end fw-bold text-muted fs-6">
+                                @Model.Reporte.TotalIVA.ToString("C2")
+                            </td>
+                            <td class="text-end fw-bold text-success fs-5">
+                                @Model.Reporte.TotalGeneral.ToString("C2")
+                            </td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+</div>

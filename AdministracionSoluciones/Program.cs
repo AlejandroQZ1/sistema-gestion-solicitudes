@@ -73,7 +73,7 @@ static async Task CrearAdministradorInicialAsync(WebApplication app)
             config["AdministradorInicial:NombreUsuario"] ?? "admin",
             config["AdministradorInicial:NombreCompleto"] ?? "Administrador del sistema",
             config["AdministradorInicial:Correo"] ?? "admin@siges.com",
-            config["AdministradorInicial:Contrasena"] ?? "Admin123*");
+            config["AdministradorInicial:Contrasena"] ?? throw new InvalidOperationException("Configure la contraseña del administrador inicial fuera del repositorio."));
     }
     catch (Exception ex)
     {

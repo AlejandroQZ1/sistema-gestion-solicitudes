@@ -1,0 +1,156 @@
+@page "{id:int}"
+@model AdministracionSoluciones.Pages.Desgloses.EditModel
+@{
+    ViewData["Title"] = "Editar Desglose";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9 col-md-11">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="h3 mb-1 text-gray-800 font-weight-bold">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Editar Desglose #@Model.Desglose.DesgloseID
+                </h2>
+                <p class="text-muted mb-0">Modifique los datos requeridos y guarde los cambios para actualizar el desglose.</p>
+            </div>
+            <a asp-page="Index" asp-route-solicitudId="@Model.Desglose.SolicitudID" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Regresar al listado
+            </a>
+        </div>
+
+        <!-- TARJETA DEL FORMULARIO -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Desglose</h6>
+                @if (Model.Desglose.Asignado)
+                {
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-lock-fill me-1"></i> Registro con asignación activa
+                    </span>
+                }
+            </div>
+            <div class="card-body p-4">
+                <form method="post" id="formDesgloseEdit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input type="hidden" asp-for="Desglose.DesgloseID" />
+                    <input type="hidden" asp-for="Desglose.Asignado" />
+
+                    <!-- Fila 1: Solicitud -->
+                    <div class="mb-3">
+                        <label asp-for="Desglose.SolicitudID" class="form-label fw-bold">Solicitud <span class="text-danger">*</span></label>
+                        <select asp-for="Desglose.SolicitudID" asp-items="Model.SolicitudesSelectList" class="form-select"></select>
+                        <span asp-validation-for="Desglose.SolicitudID" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Fila 2: Mes y Año -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Desglose.Mes" class="form-label fw-bold">Mes <span class="text-danger">*</span></label>
+                            <select asp-for="Desglose.Mes" asp-items="Model.MesesSelectList" class="form-select"></select>
+                            <span asp-validation-for="Desglose.Mes" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Desglose.Anio" class="form-label fw-bold">Año <span class="text-danger">*</span></label>
+                            <input asp-for="Desglose.Anio" type="number" class="form-control" min="2000" max="2100" />
+                            <span asp-validation-for="Desglose.Anio" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Fila 3: Horas y Porcentaje de Cobro -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Desglose.Horas" class="form-label fw-bold">Horas estimadas <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input asp-for="Desglose.Horas" type="number" step="0.5" min="0" class="form-control" />
+                                <span class="input-group-text">horas</span>
+                            </div>
+                            <span asp-validation-for="Desglose.Horas" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Desglose.PorcentajeCobro" class="form-label fw-bold">Porcentaje de cobro (%) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input asp-for="Desglose.PorcentajeCobro" type="number" step="1" min="0" max="100" class="form-control" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="form-text">Indica el porcentaje a cobrar en este mes.</div>
+                            <span asp-validation-for="Desglose.PorcentajeCobro" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Fila 4: Monto, IVA (13%) y Total -->
+                    <div class="row g-3 mb-3 p-3 bg-light rounded border">
+                        <div class="col-md-4">
+                            <label asp-for="Desglose.Monto" class="form-label fw-bold">Monto Base <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">₡</span>
+                                <input asp-for="Desglose.Monto" type="number" step="0.01" min="0" class="form-control fw-bold" id="desgloseMonto" />
+                            </div>
+                            <span asp-validation-for="Desglose.Monto" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Desglose.IVA" class="form-label fw-bold text-muted">IVA (13% autocalculado)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white">₡</span>
+                                <input asp-for="Desglose.IVA" type="text" readonly class="form-control bg-white text-muted" id="desgloseIVA" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Desglose.Total" class="form-label fw-bold text-success">Total (Monto + IVA)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white text-success fw-bold">₡</span>
+                                <input asp-for="Desglose.Total" type="text" readonly class="form-control bg-white fw-bold text-success" id="desgloseTotal" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 5: Observaciones -->
+                    <div class="mb-3">
+                        <label asp-for="Desglose.Observaciones" class="form-label fw-bold">Observaciones</label>
+                        <textarea asp-for="Desglose.Observaciones" rows="3" class="form-control" placeholder="Detalle adicional sobre el trabajo mensual realizado..."></textarea>
+                        <span asp-validation-for="Desglose.Observaciones" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Fila 6: Estado de Asignación (Criterio SOL2) -->
+                    <div class="mb-4 p-3 bg-light rounded border">
+                        <div class="form-check form-switch">
+                            <input asp-for="Desglose.Asignado" class="form-check-input" type="checkbox" id="checkAsignadoEdit" />
+                            <label asp-for="Desglose.Asignado" class="form-check-label fw-bold" for="checkAsignadoEdit">
+                                Registro Asignado (Con datos relacionados)
+                            </label>
+                        </div>
+                        <div class="form-text small text-muted">
+                            Si está marcado como asignado, el sistema impedirá su eliminación mostrando: <em>"No se puede eliminar un registro con datos relacionados."</em>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN (Flujo de pantallas Pág. 15) -->
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <a asp-page="Index" asp-route-solicitudId="@Model.Desglose.SolicitudID" class="btn btn-outline-secondary px-4">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4" style="background-color: #243b6b; border-color: #243b6b;">
+                            <i class="bi bi-save me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputMonto = document.getElementById('desgloseMonto');
+            if (inputMonto) {
+                inputMonto.dispatchEvent(new Event('input'));
+            }
+        });
+    </script>
+}

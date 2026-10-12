@@ -1,0 +1,46 @@
+@model AdministracionSoluciones.Pages.Usuarios.UsuarioInput
+@* Campos del formulario de usuario, compartidos por Create y Edit (USR4) *@
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="NombreUsuario" class="form-label"></label>
+        <input asp-for="NombreUsuario" class="form-control" />
+        <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="NombreCompleto" class="form-label"></label>
+        <input asp-for="NombreCompleto" class="form-control" />
+        <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" type="email" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Contrasena" class="form-label"></label>
+        @if (Model.EsNuevo)
+        {
+            <input asp-for="Contrasena" class="form-control" autocomplete="new-password"
+                   data-val-required="La contraseña es requerida." />
+        }
+        else
+        {
+            <input asp-for="Contrasena" class="form-control" autocomplete="new-password" />
+            <div class="form-text">Déjela en blanco para mantener la contraseña actual.</div>
+        }
+        <span asp-validation-for="Contrasena" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Estado" class="form-label"></label>
+        <select asp-for="Estado" class="form-select"
+                asp-items="@(new SelectList(EstadosUsuario.Todos, Model.Estado))"></select>
+        <span asp-validation-for="Estado" class="text-danger small"></span>
+    </div>
+</div>
+
+<input type="hidden" asp-for="UsuarioID" />

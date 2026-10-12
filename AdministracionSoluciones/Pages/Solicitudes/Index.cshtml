@@ -1,0 +1,61 @@
+@page
+@model AdministracionSoluciones.Pages.Solicitudes.IndexModel
+@{
+    ViewData["Title"] = "Solicitudes";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+    <div>
+        <h2 class="h3 mb-1 text-gray-800 font-weight-bold">
+            <i class="bi bi-journal-text text-primary me-2"></i>
+            Listado de Solicitudes
+        </h2>
+        <p class="text-muted mb-0">Seleccione el enlace "Desglose" para gestionar las horas y montos de una solicitud (HU SOL2).</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Solicitudes Registradas</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table tabla-siges align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Consecutivo</th>
+                        <th>Título</th>
+                        <th>Estado</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Solicitudes.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                No hay solicitudes registradas en la base de datos.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var s in Model.Solicitudes)
+                    {
+                        <tr>
+                            <td><strong>@s.ConsecutivoOficio</strong></td>
+                            <td>@s.Titulo</td>
+                            <td>
+                                <span class="badge bg-secondary">@s.Estado</span>
+                            </td>
+                            <td class="text-center">
+                                <!-- Requisito explícito de HU SOL2: A esta opción se ingresa seleccionando el link “Desglose” en el listado de solicitudes -->
+                                <a asp-page="/Desgloses/Index" asp-route-solicitudId="@s.SolicitudID" class="btn btn-sm btn-primary" style="background-color: #243b6b; border-color: #243b6b;">
+                                    <i class="bi bi-cash-stack me-1"></i> Desglose
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

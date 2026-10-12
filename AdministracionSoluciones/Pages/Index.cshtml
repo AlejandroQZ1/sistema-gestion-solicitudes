@@ -1,0 +1,13 @@
+@page
+@model IndexModel
+@{
+    // USR2 - Página de bienvenida (usa la plantilla del sitio de USR3: Pages/Shared/_Layout.cshtml)
+    ViewData["Title"] = "Inicio";
+}
+<link rel="stylesheet" href="~/css/seguridad.css" asp-append-version="true" />
+
+<section class="bienvenida">
+    <img src="~/img/logo-siges.svg" alt="Logo SIGES" class="bienvenida-logo" />
+    <h2>Bienvenido, @Model.NombreCompleto</h2>
+    <p>Utilice el menú de la izquierda para acceder a las opciones del sistema.</p>
+</section>
