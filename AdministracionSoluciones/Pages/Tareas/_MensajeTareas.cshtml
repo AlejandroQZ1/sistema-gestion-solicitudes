@@ -1,0 +1,25 @@
+@* Presenta el resultado de la operación mediante un diálogo de Bootstrap. *@
+@{
+    string? exito = TempData["ExitoTareas"] as string;
+    string? error = TempData["ErrorTareas"] as string;
+    string? mensaje = error ?? exito;
+    string titulo = error != null ? "No se pudo completar la operación" : "Operación realizada";
+}
+@if (mensaje != null)
+{
+    <div class="modal fade" id="mensajeTareas" tabindex="-1" aria-labelledby="tituloMensajeTareas" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="tituloMensajeTareas">@titulo</h2>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">@mensaje</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

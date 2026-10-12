@@ -1,8 +1,10 @@
+
 using AdministracionSoluciones.Repository;
 using AdministracionSoluciones.BackgroundServices;
 using AdministracionSoluciones.Seguridad;
 using AdministracionSoluciones.Services;
 using AdministracionSoluciones.Services.Abstract;
+using AdministracionSoluciones.Infraestructura;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ builder.Services.AddScoped<ICatalogoLookupService>(
     services => services.GetRequiredService<CatalogoService>());
 builder.Services.AddScoped<BitacoraRepository>();
 
+// Repositorio de tareas.
+builder.Services.AddScoped<TareaRepository>();
+
 // Repositorio de solicitudes (SOL1).
 builder.Services.AddScoped<ISolicitudRepository, SolicitudRepository>();
 
@@ -28,6 +33,10 @@ builder.Services.AddSingleton<ICifradoService, CifradoService>();
 builder.Services.AddScoped<IBitacoraService, BitacoraService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// Servicio y filtro de errores de tareas.
+builder.Services.AddScoped<ITareaService, TareaService>();
+builder.Services.AddScoped<ErroresTareas>();
 
 // Servicio de solicitudes (SOL1, SOL5 y SOL6).
 builder.Services.AddScoped<ISolicitudService, SolicitudService>();

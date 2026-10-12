@@ -1,0 +1,61 @@
+/* Presentación de las pantallas de tareas y reportes. */
+.tareas-modulo {
+    max-width: 1250px;
+}
+.tareas-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+/* Los filtros se distribuyen en filas y se ajustan al ancho disponible. */
+.tareas-filtros {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+}
+.tareas-filtros > div {
+    min-width: 130px;
+}
+.tareas-filtros .flex-grow-1 {
+    min-width: min(320px, 100%);
+}
+.tareas-filtros input[type=number] {
+    max-width: 160px;
+}
+.tareas-formulario {
+    max-width: 760px;
+}
+.tareas-tabla {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: .4rem;
+}
+.tareas-tabla thead, .tareas-tabla tfoot {
+    background: #edf3f8;
+}
+/* Conserva los saltos de línea y permite mostrar descripciones extensas. */
+.tarea-descripcion {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-width: 150px;
+}
+.tareas-modulo .validation-summary-valid {
+    display: none;
+}
+/* En pantallas pequeñas, los filtros y acciones se apilan verticalmente. */
+@media (max-width: 720px) {
+    .tareas-encabezado {
+        align-items: start;
+        flex-direction: column;
+    }
+    .tareas-filtros {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .tareas-filtros input[type=number] {
+        max-width: none;
+    }
+}

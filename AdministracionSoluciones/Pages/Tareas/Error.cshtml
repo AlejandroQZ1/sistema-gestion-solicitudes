@@ -1,0 +1,11 @@
+@page
+@model AdministracionSoluciones.Pages.Tareas.ErrorModel
+@{ ViewData["Title"] = "Error de tareas"; }
+@* El mensaje evita exponer detalles tecnicos y conserva la navegacion del sitio. *@
+<partial name="_MensajeTareas" />
+<p>No se pudo completar la operación solicitada.</p>
+<a asp-page="/Index" class="btn btn-outline-secondary">Regresar al inicio</a>
+
+@section Scripts {
+    <script src="~/js/tareas.js" asp-append-version="true"></script>
+}

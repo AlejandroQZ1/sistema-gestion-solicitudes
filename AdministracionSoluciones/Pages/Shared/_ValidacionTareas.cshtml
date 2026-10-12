@@ -1,0 +1,19 @@
+@* Los errores de formulario se presentan en el mismo tipo de dialogo que los resultados. *@
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="modal fade" id="mensajeTareas" tabindex="-1" aria-labelledby="tituloValidacionTareas" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="tituloValidacionTareas">Revise los datos ingresados</h2>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

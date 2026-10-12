@@ -124,7 +124,6 @@
             <span><span class="estado estado-vencida">Vencida</span></span>
         </div>
 
-
         @if (!Model.Solicitudes.Any())
         {
             <div class="alert alert-light border mb-0">
@@ -164,6 +163,7 @@
 
                             <tr>
                                 <td>@solicitud.ConsecutivoOficio</td>
+
                                 <td>
                                     <div class="fw-semibold">@solicitud.Titulo</div>
 
@@ -200,7 +200,13 @@
                                 </td>
 
                                 <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a asp-page="/Tareas/Index"
+                                           asp-route-solicitudId="@solicitud.SolicitudID"
+                                           class="btn btn-outline-primary btn-sm">
+                                            Tareas
+                                        </a>
+
                                         <a asp-page="/Solicitudes/Edit"
                                            asp-route-id="@solicitud.SolicitudID"
                                            class="btn btn-outline-secondary btn-sm">
