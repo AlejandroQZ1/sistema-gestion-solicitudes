@@ -18,6 +18,15 @@ public abstract class FormularioTareaModel : PageModel
     [BindProperty]
     public TareaFormulario Input { get; set; } = new();
 
+    // Mantiene el listado de origen al guardar o cancelar.
+    [BindProperty(SupportsGet = true)]
+    public bool Todas { get; set; }
+
+    [BindProperty]
+    public int? SolicitudSeleccionada { get; set; }
+    public bool ElegirSolicitud { get; set; }
+    public IReadOnlyList<SolicitudOpcion> Solicitudes { get; set; } = [];
+
     protected FormularioTareaModel(ITareaService tareas)
     {
         this.tareas = tareas;
@@ -94,6 +103,6 @@ public abstract class FormularioTareaModel : PageModel
             return Page();
         }
         TempData["ExitoTareas"] = id.HasValue ? "La tarea se actualizó correctamente." : "La tarea se creó correctamente.";
-        return RedirectToPage("Index", new { solicitudId });
+        return Todas ? RedirectToPage("Index") : RedirectToPage("Index", new { solicitudId });
     }
 }

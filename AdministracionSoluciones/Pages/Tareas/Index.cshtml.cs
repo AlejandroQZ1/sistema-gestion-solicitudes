@@ -28,18 +28,17 @@ public class IndexModel : PageModel
         {
             return BadRequest();
         }
-        if (!solicitudId.HasValue)
+        // Desde el menú se listan todas las tareas; desde una solicitud, solo las asociadas.
+        if (solicitudId.HasValue)
         {
-            await tareas.ConsultaAsync(Sesion.NombreUsuario(HttpContext), "tareas");
-            return Page();
-        }
-        Datos.Solicitud = await tareas.SolicitudAsync(solicitudId.Value);
-        if (Datos.Solicitud == null)
-        {
-            return NotFound();
+            Datos.Solicitud = await tareas.SolicitudAsync(solicitudId.Value);
+            if (Datos.Solicitud == null)
+            {
+                return NotFound();
+            }
         }
         Datos.Pagina = Math.Max(1, pagina);
-        var resultado = await tareas.ListarAsync(solicitudId.Value, Datos.Pagina, Sesion.NombreUsuario(HttpContext));
+        var resultado = await tareas.ListarAsync(solicitudId, Datos.Pagina, Sesion.NombreUsuario(HttpContext));
         Datos.Filas = resultado.Filas;
         Datos.Cantidad = resultado.Cantidad;
         if (Datos.Pagina > Datos.Paginas)
@@ -50,7 +49,7 @@ public class IndexModel : PageModel
     }
 
     // La FK evita eliminar tareas relacionadas.
-    public async Task<IActionResult> OnPostEliminarAsync(int id, int solicitudId)
+    public async Task<IActionResult> OnPostEliminarAsync(int id, int solicitudId, bool todas = false)
     {
         if (!ModelState.IsValid)
         {
@@ -69,6 +68,6 @@ public class IndexModel : PageModel
             await tareas.RegistrarErrorAsync(Sesion.NombreUsuario(HttpContext), ex, HttpContext.TraceIdentifier);
             TempData["ErrorTareas"] = "No se puede eliminar un registro con datos relacionados.";
         }
-        return RedirectToPage("Index", new { solicitudId });
+        return todas ? RedirectToPage("Index") : RedirectToPage("Index", new { solicitudId });
     }
 }
