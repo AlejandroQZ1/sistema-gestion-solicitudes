@@ -8,7 +8,7 @@ public interface ITareaService
     Task<IReadOnlyList<UsuarioOpcion>> UsuariosAsync();
     Task<IReadOnlyList<SolicitudOpcion>> SolicitudesAsync();
     Task<SolicitudOpcion?> SolicitudAsync(int id);
-    Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int solicitudId, int pagina, string actor);
+    Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int? solicitudId, int pagina, string actor);
     Task<TareaFila?> ObtenerAsync(int id, int solicitudId, string actor);
     Task<string?> ValidarAsync(TareaDatos datos);
     Task CrearAsync(int solicitudId, TareaDatos datos, string actor);

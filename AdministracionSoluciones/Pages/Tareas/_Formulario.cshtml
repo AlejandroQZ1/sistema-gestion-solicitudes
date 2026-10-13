@@ -8,9 +8,25 @@
 <link rel="stylesheet" href="~/css/tareas.css" asp-append-version="true" />
 <div class="tareas-modulo">
     <partial name="_ValidacionTareas" />
-    <p class="mb-4"><strong>Solicitud:</strong> @Model.Input.Solicitud.Etiqueta</p>
+    @if (!Model.ElegirSolicitud)
+    {
+        <p class="mb-4"><strong>Solicitud:</strong> @Model.Input.Solicitud.Etiqueta</p>
+    }
     @* Los Tag Helpers generan las rutas y el token antifalsificación del formulario. *@
-    <form method="post" asp-page="@(Model.Input.TareaId.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Input.TareaId" asp-route-solicitudId="@Model.Input.Solicitud.Id" class="tareas-formulario" novalidate>
+    <form method="post" asp-page="@(Model.Input.TareaId.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Input.TareaId" asp-route-solicitudId="@(Model.ElegirSolicitud ? (int?)null : Model.Input.Solicitud.Id)" asp-route-todas="@Model.Todas" class="tareas-formulario" novalidate>
+        @if (Model.ElegirSolicitud)
+        {
+            <div class="mb-3">
+                <label asp-for="SolicitudSeleccionada" class="form-label">Solicitud</label>
+                <select asp-for="SolicitudSeleccionada" asp-items="@(new SelectList(Model.Solicitudes, "Id", "Etiqueta"))" class="form-select" required>
+                    <option value="">Seleccione una solicitud</option>
+                </select>
+                @if (Model.Solicitudes.Count == 0)
+                {
+                    <p class="text-muted mt-2">No hay solicitudes disponibles. Primero registre una solicitud.</p>
+                }
+            </div>
+        }
         <div class="mb-3">
             <label asp-for="Input.Descripcion" class="form-label"></label>
             <textarea asp-for="Input.Descripcion" class="form-control" rows="4"></textarea>
@@ -33,7 +49,7 @@
         </div>
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">Guardar</button>
-            <a asp-page="Index" asp-route-solicitudId="@Model.Input.Solicitud.Id" class="btn btn-outline-secondary">Regresar al listado</a>
+            <a asp-page="Index" asp-route-solicitudId="@(Model.Todas ? (int?)null : Model.Input.Solicitud.Id)" class="btn btn-outline-secondary">Regresar al listado</a>
         </div>
     </form>
 </div>

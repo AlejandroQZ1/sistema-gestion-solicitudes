@@ -59,13 +59,13 @@ public class TareaRepository
             """, new { Id = id });
     }
 
-    // Consulta una página de diez tareas y el total de registros de la solicitud.
-    public async Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int solicitudId, int pagina)
+    // Consulta diez tareas por página; el acceso desde una solicitud limita los resultados.
+    public async Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int? solicitudId, int pagina)
     {
         using var conexion = conexiones.CreateConnection();
-        var cantidad = await conexion.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM tareas WHERE SolicitudID = @SolicitudId", new { SolicitudId = solicitudId });
+        var cantidad = await conexion.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM tareas WHERE (@SolicitudId IS NULL OR SolicitudID = @SolicitudId)", new { SolicitudId = solicitudId });
         // El registro recién creado aparece en la primera página, aunque tenga una Fecha anterior.
-        var filas = await conexion.QueryAsync<TareaFila>(Columnas + " WHERE t.SolicitudID = @SolicitudId ORDER BY t.TareaID DESC LIMIT 10 OFFSET @Desde",
+        var filas = await conexion.QueryAsync<TareaFila>(Columnas + " WHERE (@SolicitudId IS NULL OR t.SolicitudID = @SolicitudId) ORDER BY t.TareaID DESC LIMIT 10 OFFSET @Desde",
             new { SolicitudId = solicitudId, Desde = ((long)pagina - 1) * 10 });
         return (filas.AsList(), cantidad);
     }

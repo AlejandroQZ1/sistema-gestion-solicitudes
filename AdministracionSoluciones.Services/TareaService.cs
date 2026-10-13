@@ -26,7 +26,7 @@ public class TareaService : ITareaService
     public Task<SolicitudOpcion?> SolicitudAsync(int id) => repositorio.SolicitudAsync(id);
 
     // Se registra la consulta que muestra la pagina de tareas.
-    public async Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int solicitudId, int pagina, string actor)
+    public async Task<(IReadOnlyList<TareaFila> Filas, long Cantidad)> ListarAsync(int? solicitudId, int pagina, string actor)
     {
         var resultado = await repositorio.ListarAsync(solicitudId, Math.Max(1, pagina));
         await ConsultaAsync(actor, "tareas");

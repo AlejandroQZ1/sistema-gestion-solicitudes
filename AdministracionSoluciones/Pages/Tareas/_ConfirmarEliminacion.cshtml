@@ -12,7 +12,7 @@
                 <p class="tarea-descripcion text-muted mb-0">@Model.Descripcion</p>
             </div>
             <div class="modal-footer">
-                <form method="post" asp-page="Index" asp-page-handler="Eliminar" asp-route-id="@Model.Id" asp-route-solicitudId="@Model.SolicitudId">
+                <form method="post" asp-page="Index" asp-page-handler="Eliminar" asp-route-id="@Model.Id" asp-route-solicitudId="@Model.SolicitudId" asp-route-todas="@(ViewData["TodasLasTareas"] is true)">
                     <button type="submit" class="btn btn-danger">Sí</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

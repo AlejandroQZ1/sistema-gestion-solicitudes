@@ -1,75 +1,95 @@
-@* Listado paginado de tareas de la solicitud seleccionada. *@
+@* Mantenimiento paginado, general o asociado a una solicitud. *@
 @page
 @model AdministracionSoluciones.Pages.Tareas.IndexModel
 @{
     ViewData["Title"] = "Tareas de solicitudes";
+    var todas = Model.Datos.Solicitud is null;
+    ViewData["TodasLasTareas"] = todas;
 }
 <link rel="stylesheet" href="~/css/tareas.css" asp-append-version="true" />
 <div class="tareas-modulo">
     <partial name="_MensajeTareas" />
-    @if (Model.Datos.Solicitud is null)
-    {
-        <p>Las tareas se administran desde las opciones de cada solicitud.</p>
-    }
-    @if (Model.Datos.Solicitud is not null)
-    {
-        <div class="tareas-encabezado">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body tareas-encabezado mb-0">
             <div>
-                <h2 class="h5">@Model.Datos.Solicitud.Etiqueta</h2>
-                <p class="text-muted mb-0">@Model.Datos.Cantidad tarea(s)</p>
+                <h2 class="h4 mb-2">Administración de tareas</h2>
+                @if (!todas)
+                {
+                    <p class="text-muted mb-0"><strong>Solicitud:</strong> @Model.Datos.Solicitud!.Etiqueta</p>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Tareas registradas en las solicitudes.</p>
+                }
             </div>
-            <a asp-page="Create" asp-route-solicitudId="@Model.Datos.Solicitud.Id" class="btn btn-primary">Nuevo</a>
+            <a asp-page="Create" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-todas="@todas" class="btn btn-primary">Nuevo</a>
         </div>
-        <div class="table-responsive tareas-tabla">
-            <table class="table align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Descripción de la tarea</th>
-                        <th>Usuario</th>
-                        <th class="text-end">Horas invertidas</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var tarea in Model.Datos.Filas)
-                    {
-                        <tr>
-                            <td class="text-nowrap">@(tarea.Fecha?.ToString("dd/MM/yyyy") ?? "—")</td>
-                            <td class="tarea-descripcion">@tarea.Descripcion</td>
-                            <td>@tarea.NombreCompleto <span class="text-muted">(@tarea.NombreUsuario)</span></td>
-                            <td class="text-end">@(tarea.Horas?.ToString("0.##") ?? "—")</td>
-                            <td class="text-nowrap">
-                                <a asp-page="Edit" asp-route-id="@tarea.Id" asp-route-solicitudId="@Model.Datos.Solicitud.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminar-@tarea.Id">Eliminar</button>
-                            </td>
-                        </tr>
-                    }
-                    @if (Model.Datos.Filas.Count == 0)
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">Esta solicitud todavía no tiene tareas.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h3 class="h6 mb-0">Tareas registradas</h3>
+            <span class="text-muted">Total: @Model.Datos.Cantidad</span>
         </div>
-        @foreach (var tarea in Model.Datos.Filas)
-        {
-            <partial name="_ConfirmarEliminacion" model="tarea" />
-        }
-        @* La navegación mantiene el filtro de solicitud entre páginas. *@
-        <nav aria-label="Páginas de tareas" class="d-flex gap-3 align-items-center mt-3">
-            @if (Model.Datos.Pagina > 1)
-            {
-                <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud.Id" asp-route-pagina="@(Model.Datos.Pagina - 1)">Anterior</a>
-            }
-            <span>Página @Model.Datos.Pagina de @Model.Datos.Paginas</span>
-            @if (Model.Datos.Pagina < Model.Datos.Paginas)
-            {
-                <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud.Id" asp-route-pagina="@(Model.Datos.Pagina + 1)">Siguiente</a>
-            }
-        </nav>
+        <div class="card-body">
+            <div class="table-responsive tareas-tabla">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            @if (todas)
+                            {
+                                <th>Solicitud</th>
+                            }
+                            <th>Fecha</th>
+                            <th>Descripción de la tarea</th>
+                            <th>Usuario</th>
+                            <th class="text-end">Horas invertidas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tarea in Model.Datos.Filas)
+                        {
+                            <tr>
+                                @if (todas)
+                                {
+                                    <td><strong>@tarea.Consecutivo</strong><br /><span class="text-muted">@tarea.Titulo</span></td>
+                                }
+                                <td class="text-nowrap">@(tarea.Fecha?.ToString("dd/MM/yyyy") ?? "—")</td>
+                                <td class="tarea-descripcion">@tarea.Descripcion</td>
+                                <td>@tarea.NombreCompleto <span class="text-muted">(@tarea.NombreUsuario)</span></td>
+                                <td class="text-end">@(tarea.Horas?.ToString("0.##") ?? "—")</td>
+                                <td class="text-nowrap">
+                                    <a asp-page="Edit" asp-route-id="@tarea.Id" asp-route-solicitudId="@tarea.SolicitudId" asp-route-todas="@todas" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminar-@tarea.Id">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.Datos.Filas.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="@(todas ? 6 : 5)" class="text-center text-muted py-4">@(todas ? "No hay tareas registradas." : "Esta solicitud todavía no tiene tareas.")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @* Los enlaces mantienen la solicitud de origen, cuando corresponde. *@
+            <nav aria-label="Páginas de tareas" class="d-flex gap-3 align-items-center mt-3">
+                @if (Model.Datos.Pagina > 1)
+                {
+                    <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-pagina="@(Model.Datos.Pagina - 1)">Anterior</a>
+                }
+                <span>Página @Model.Datos.Pagina de @Model.Datos.Paginas</span>
+                @if (Model.Datos.Pagina < Model.Datos.Paginas)
+                {
+                    <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-pagina="@(Model.Datos.Pagina + 1)">Siguiente</a>
+                }
+            </nav>
+        </div>
+    </div>
+    @foreach (var tarea in Model.Datos.Filas)
+    {
+        <partial name="_ConfirmarEliminacion" model="tarea" />
     }
 </div>
 
