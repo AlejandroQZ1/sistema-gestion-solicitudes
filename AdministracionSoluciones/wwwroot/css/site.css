@@ -1,180 +1,540 @@
+/* ==========================================================================
+   SIGES - Plantilla Global SB Admin 2 (USR3) & Estilos de la Aplicación
+   ========================================================================== */
+
+:root {
+    --siges-primary: #243b6b;
+    --siges-primary-dark: #192a4f;
+    --siges-primary-light: #3a5693;
+    --siges-gradient: linear-gradient(180deg, #243b6b 0%, #192a4f 100%);
+    --siges-success: #1cc88a;
+    --siges-info: #36b9cc;
+    --siges-warning: #f6c23e;
+    --siges-danger: #e74a3b;
+    --siges-secondary: #858796;
+    --siges-light: #f8f9fc;
+    --siges-dark: #5a5c69;
+    --topbar-height: 70px;
+    --sidebar-width: 250px;
+    --sidebar-collapsed-width: 80px;
+}
+
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #f5f7fb;
+    color: #495057;
 }
 
+/* Layout Container */
 .sistema {
     display: flex;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
-/* MENÚ LATERAL */
+/* ==========================================================================
+   MENÚ LATERAL (SIDEBAR - USR3 inspirado en SB Admin 2)
+   ========================================================================== */
 
 .sidebar {
-    width: 250px;
-    background-color: #243b6b;
-    color: white;
+    width: var(--sidebar-width);
+    background: var(--siges-gradient);
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transition: width 0.25s ease-in-out;
+    z-index: 100;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
 }
 
+/* Logo & Marca */
 .logo-sistema {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 25px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding: 20px 18px;
+    text-decoration: none;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.logo-sistema:hover {
+    color: #ffffff;
 }
 
 .logo-icono {
-    width: 45px;
-    height: 45px;
-    background-color: white;
-    color: #243b6b;
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    background-color: #ffffff;
+    color: var(--siges-primary);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.logo-sistema h2 {
-    margin: 0;
     font-size: 22px;
+    font-weight: 800;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    flex-shrink: 0;
 }
 
-.logo-sistema span {
-    font-size: 12px;
-    opacity: 0.8;
+.logo-texto h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.05rem;
+    color: #ffffff;
 }
 
+.logo-texto span {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.75);
+    display: block;
+    line-height: 1.2;
+}
+
+/* Secciones y divisor */
+.sidebar-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 10px 15px;
+}
+
+.sidebar-heading {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    padding: 10px 18px 4px;
+}
+
+/* Elementos del Menú */
 .menu {
-    padding: 20px 12px;
+    padding: 8px 10px;
     flex: 1;
+    overflow-y: auto;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: #ffffff;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    padding: 12px 15px;
-    margin-bottom: 6px;
+    padding: 11px 16px;
+    margin-bottom: 4px;
     border-radius: 8px;
-    transition: 0.2s;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
 }
 
-    .menu-item:hover {
-        background-color: rgba(255,255,255,0.15);
-        color: white;
-    }
-
-    .menu-item span {
-        width: 22px;
-        text-align: center;
-    }
-
-.cerrar-sesion {
-    padding: 15px 12px;
-    border-top: 1px solid rgba(255,255,255,0.15);
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateX(2px);
 }
 
+.menu-item.active {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-/* CONTENIDO */
+.menu-item i,
+.menu-item span.menu-icon {
+    width: 22px;
+    font-size: 1.1rem;
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.menu-item .menu-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+}
+
+/* Botón colapsar sidebar (SB Admin 2) */
+.sidebar-toggler-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-toggler-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.sidebar-toggler-btn:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Estado Colapsado (Toggled) */
+.sidebar.toggled {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar.toggled .logo-texto,
+.sidebar.toggled .sidebar-heading,
+.sidebar.toggled .menu-item span.menu-text,
+.sidebar.toggled .menu-badge,
+.sidebar.toggled .cerrar-sesion span.menu-text {
+    display: none;
+}
+
+.sidebar.toggled .logo-sistema {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar.toggled .menu-item {
+    justify-content: center;
+    padding: 12px 10px;
+}
+
+.sidebar.toggled .sidebar-toggler-btn i {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   PARTE DERECHA / CONTENIDO
+   ========================================================================== */
 
 .contenido-sistema {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    min-height: 100vh;
+    background-color: #f5f7fb;
 }
 
-
-/* ENCABEZADO */
+/* ==========================================================================
+   TOPBAR (ENCABEZADO SUPERIOR - USR3)
+   ========================================================================== */
 
 .topbar {
-    height: 75px;
-    background-color: white;
-    border-bottom: 1px solid #e4e7ec;
+    height: var(--topbar-height);
+    background-color: #ffffff;
+    border-bottom: 1px solid #e3e6f0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 1.75rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 90;
 }
 
-    .topbar h1 {
-        font-size: 21px;
-        margin: 0;
-        color: #333;
-    }
-
-.usuario {
+.topbar-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
+}
+
+.topbar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2e384d;
+    margin: 0;
+}
+
+.btn-sidebar-toggle-top {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--siges-primary);
+    font-size: 1.25rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-sidebar-toggle-top:hover {
+    background: #eaecf4;
+}
+
+/* Sección Usuario Topbar */
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.usuario-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 25px;
+    text-decoration: none;
+    color: #495057;
+    transition: background 0.15s;
+}
+
+.usuario-dropdown-btn:hover {
+    background-color: #f1f3f9;
 }
 
 .avatar {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background-color: #e9eef8;
+    background: linear-gradient(135deg, #243b6b, #4e73df);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    flex-shrink: 0;
 }
 
 .datos-usuario {
     display: flex;
     flex-direction: column;
+    text-align: right;
 }
 
-    .datos-usuario strong {
-        font-size: 14px;
-        color: #333;
-    }
+.datos-usuario strong {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #333a48;
+    line-height: 1.2;
+}
 
-    .datos-usuario span {
-        font-size: 12px;
-        color: #777;
-    }
+.datos-usuario span {
+    font-size: 0.75rem;
+    color: #858796;
+}
 
-
-/* ÁREA PRINCIPAL*/
+/* ==========================================================================
+   ÁREA DE CONTENIDO PRINCIPAL
+   ========================================================================== */
 
 .contenido-principal {
-    padding: 30px;
+    flex: 1;
+    padding: 1.75rem;
 }
 
+/* Tarjetas métricas ejecutivas (estilo SB Admin 2 Cards) */
+.card-kpi {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.15rem 1.25rem 0 rgba(58, 59, 69, 0.1);
+    background-color: #ffffff;
+    border-left: 0.35rem solid;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-/* RESPONSIVE */
+.card-kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 1.5rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.card-kpi.border-primary { border-left-color: #243b6b !important; }
+.card-kpi.border-success { border-left-color: #1cc88a !important; }
+.card-kpi.border-info    { border-left-color: #36b9cc !important; }
+.card-kpi.border-warning { border-left-color: #f6c23e !important; }
+
+.card-kpi-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.35rem;
+}
+
+.card-kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2e384d;
+    margin: 0;
+}
+
+/* Tarjetas contenedoras generales */
+.tarjeta-siges {
+    background: #ffffff;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.15rem 1.25rem 0 rgba(58, 59, 69, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.tarjeta-siges-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tarjeta-siges-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--siges-primary);
+}
+
+.tarjeta-siges-body {
+    padding: 1.25rem;
+}
+
+/* Tablas con diseño profesional */
+.tabla-siges {
+    width: 100%;
+    margin-bottom: 0;
+    color: #495057;
+}
+
+.tabla-siges th {
+    background-color: #f8f9fc;
+    color: #5a5c69;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04rem;
+    border-bottom: 2px solid #e3e6f0;
+    padding: 0.85rem 0.75rem;
+    white-space: nowrap;
+}
+
+.tabla-siges td {
+    padding: 0.85rem 0.75rem;
+    vertical-align: middle;
+    font-size: 0.88rem;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.tabla-siges tbody tr:hover {
+    background-color: #fcfdfe;
+}
+
+.tabla-siges tfoot td {
+    background-color: #f8f9fc;
+    font-weight: 800;
+    font-size: 0.95rem;
+    border-top: 2px solid #b7b9cc;
+    padding: 0.9rem 0.75rem;
+}
+
+/* Badges */
+.badge-siges {
+    padding: 0.35em 0.65em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: 0.35rem;
+}
+
+/* Footer Global */
+.footer-sistema {
+    background-color: #ffffff;
+    border-top: 1px solid #e3e6f0;
+    padding: 1.2rem 1.75rem;
+    font-size: 0.8rem;
+    color: #858796;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   RESPONSIVE (MÓVIL Y PANTALLAS PEQUEÑAS)
+   ========================================================================== */
 
 @media (max-width: 768px) {
+    .btn-sidebar-toggle-top {
+        display: inline-flex;
+    }
 
     .sidebar {
-        width: 75px;
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        transition: left 0.3s ease;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
 
-    .logo-sistema div:not(.logo-icono),
-    .menu-item:not(span),
+    .sidebar.toggled {
+        left: 0;
+        width: var(--sidebar-width);
+    }
+
+    .sidebar.toggled .logo-texto,
+    .sidebar.toggled .sidebar-heading,
+    .sidebar.toggled .menu-item span.menu-text,
+    .sidebar.toggled .cerrar-sesion span.menu-text {
+        display: inline;
+    }
+
     .datos-usuario {
-        font-size: 0;
+        display: none;
     }
 
-    .logo-sistema {
-        justify-content: center;
-        padding: 20px 10px;
+    .contenido-principal {
+        padding: 1rem;
+    }
+}
+
+/* Estilos de Impresión para Reportes (SOL7) */
+@media print {
+    .sidebar, .topbar, .footer-sistema, .no-print, .btn, .filtro-reporte {
+        display: none !important;
     }
 
-    .menu-item {
-        justify-content: center;
+    .sistema, .contenido-sistema, .contenido-principal {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        min-height: auto !important;
     }
 
-    .topbar {
-        padding: 0 15px;
+    .tarjeta-siges {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .tarjeta-siges-header {
+        border-bottom: 2px solid #333 !important;
+        padding-bottom: 10px !important;
+    }
+
+    .print-only {
+        display: block !important;
     }
 }

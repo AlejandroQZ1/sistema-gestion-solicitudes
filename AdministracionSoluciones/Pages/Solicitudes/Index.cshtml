@@ -1,4 +1,4 @@
-﻿
+
 @page
 @model AdministracionSoluciones.Pages.Solicitudes.IndexModel
 
@@ -205,6 +205,12 @@
                                            asp-route-solicitudId="@solicitud.SolicitudID"
                                            class="btn btn-outline-primary btn-sm">
                                             Tareas
+                                        </a>
+
+                                        <a asp-page="/Desgloses/Index"
+                                           asp-route-solicitudId="@solicitud.SolicitudID"
+                                           class="btn btn-outline-primary btn-sm">
+                                            Desglose
                                         </a>
 
                                         <a asp-page="/Solicitudes/Edit"

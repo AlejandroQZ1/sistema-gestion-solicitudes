@@ -47,6 +47,12 @@ builder.Services.AddScoped<IProcesadorVencimientosSolicitudes>(
             "El servicio de solicitudes debe procesar vencimientos."));
 builder.Services.AddHostedService<VencimientoSolicitudesHostedService>();
 
+// Desgloses y reporte de facturación.
+builder.Services.AddScoped<DesgloseRepository>();
+builder.Services.AddScoped<ReporteRepository>();
+builder.Services.AddScoped<IDesgloseService, DesgloseService>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
+
 // Servicio de correo electrónico (SOL6).
 builder.Services.AddScoped<ICorreoService, CorreoService>();
 
