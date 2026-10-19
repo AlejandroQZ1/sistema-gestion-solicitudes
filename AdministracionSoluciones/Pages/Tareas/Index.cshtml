@@ -1,38 +1,65 @@
-@* Mantenimiento paginado, general o asociado a una solicitud. *@
+
+@* Listado de tareas general o asociado a una solicitud. *@
 @page
 @model AdministracionSoluciones.Pages.Tareas.IndexModel
+
 @{
     ViewData["Title"] = "Tareas de solicitudes";
     var todas = Model.Datos.Solicitud is null;
     ViewData["TodasLasTareas"] = todas;
 }
+
 <link rel="stylesheet" href="~/css/tareas.css" asp-append-version="true" />
-<div class="tareas-modulo">
+
+<div class="container-fluid pagina-siges tareas-modulo">
+
     <partial name="_MensajeTareas" />
-    <div class="card shadow-sm mb-4">
-        <div class="card-body tareas-encabezado mb-0">
-            <div>
-                <h2 class="h4 mb-2">Administración de tareas</h2>
-                @if (!todas)
-                {
-                    <p class="text-muted mb-0"><strong>Solicitud:</strong> @Model.Datos.Solicitud!.Etiqueta</p>
-                }
-                else
-                {
-                    <p class="text-muted mb-0">Tareas registradas en las solicitudes.</p>
-                }
-            </div>
-            <a asp-page="Create" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-todas="@todas" class="btn btn-primary">Nuevo</a>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="h3 mb-1 fw-bold text-dark">
+                <i class="bi bi-check2-square text-primary me-2"></i>
+                Administración de tareas
+            </h2>
+
+            @if (!todas)
+            {
+                <p class="text-muted mb-0">
+                    <strong>Solicitud:</strong> @Model.Datos.Solicitud!.Etiqueta
+                </p>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    Consulta y administra las tareas registradas en las solicitudes.
+                </p>
+            }
         </div>
+
+        <a asp-page="Create"
+           asp-route-solicitudId="@Model.Datos.Solicitud?.Id"
+           asp-route-todas="@todas"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            Nueva tarea
+        </a>
     </div>
-    <div class="card shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h3 class="h6 mb-0">Tareas registradas</h3>
-            <span class="text-muted">Total: @Model.Datos.Cantidad</span>
+
+    <section class="tarjeta-siges">
+        <div class="tarjeta-siges-header">
+            <h5>
+                <i class="bi bi-list-ul me-2"></i>
+                Tareas registradas
+            </h5>
+
+            <span class="badge text-bg-primary">
+                Total: @Model.Datos.Cantidad
+            </span>
         </div>
-        <div class="card-body">
+
+        <div class="tarjeta-siges-body p-0">
             <div class="table-responsive tareas-tabla">
-                <table class="table align-middle mb-0">
+                <table class="table tabla-siges table-hover align-middle mb-0">
                     <thead>
                         <tr>
                             @if (todas)
@@ -43,50 +70,109 @@
                             <th>Descripción de la tarea</th>
                             <th>Usuario</th>
                             <th class="text-end">Horas invertidas</th>
-                            <th>Acciones</th>
+                            <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach (var tarea in Model.Datos.Filas)
                         {
                             <tr>
                                 @if (todas)
                                 {
-                                    <td><strong>@tarea.Consecutivo</strong><br /><span class="text-muted">@tarea.Titulo</span></td>
+                                    <td class="text-nowrap">
+                                        <span class="fw-semibold">@tarea.Consecutivo</span>
+                                        <div class="text-muted small">@tarea.Titulo</div>
+                                    </td>
                                 }
-                                <td class="text-nowrap">@(tarea.Fecha?.ToString("dd/MM/yyyy") ?? "—")</td>
-                                <td class="tarea-descripcion">@tarea.Descripcion</td>
-                                <td>@tarea.NombreCompleto <span class="text-muted">(@tarea.NombreUsuario)</span></td>
-                                <td class="text-end">@(tarea.Horas?.ToString("0.##") ?? "—")</td>
+
                                 <td class="text-nowrap">
-                                    <a asp-page="Edit" asp-route-id="@tarea.Id" asp-route-solicitudId="@tarea.SolicitudId" asp-route-todas="@todas" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminar-@tarea.Id">Eliminar</button>
+                                    @(tarea.Fecha?.ToString("dd/MM/yyyy") ?? "—")
+                                </td>
+
+                                <td class="tarea-descripcion">
+                                    @tarea.Descripcion
+                                </td>
+
+                                <td>
+                                    <span class="fw-semibold">@tarea.NombreCompleto</span>
+                                    <div class="text-muted small">(@tarea.NombreUsuario)</div>
+                                </td>
+
+                                <td class="text-end text-nowrap">
+                                    @(tarea.Horas?.ToString("0.##") ?? "—")
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-end flex-wrap gap-2">
+                                        <a asp-page="Edit"
+                                           asp-route-id="@tarea.Id"
+                                           asp-route-solicitudId="@tarea.SolicitudId"
+                                           asp-route-todas="@todas"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            Editar
+                                        </a>
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmarEliminar-@tarea.Id">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }
+
                         @if (Model.Datos.Filas.Count == 0)
                         {
                             <tr>
-                                <td colspan="@(todas ? 6 : 5)" class="text-center text-muted py-4">@(todas ? "No hay tareas registradas." : "Esta solicitud todavía no tiene tareas.")</td>
+                                <td colspan="@(todas ? 6 : 5)" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    @(todas
+                                        ? "No hay tareas registradas."
+                                        : "Esta solicitud todavía no tiene tareas.")
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @* Los enlaces mantienen la solicitud de origen, cuando corresponde. *@
-            <nav aria-label="Páginas de tareas" class="d-flex gap-3 align-items-center mt-3">
-                @if (Model.Datos.Pagina > 1)
-                {
-                    <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-pagina="@(Model.Datos.Pagina - 1)">Anterior</a>
-                }
-                <span>Página @Model.Datos.Pagina de @Model.Datos.Paginas</span>
-                @if (Model.Datos.Pagina < Model.Datos.Paginas)
-                {
-                    <a class="btn btn-outline-secondary" asp-page="Index" asp-route-solicitudId="@Model.Datos.Solicitud?.Id" asp-route-pagina="@(Model.Datos.Pagina + 1)">Siguiente</a>
-                }
-            </nav>
         </div>
+    </section>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
+        <span class="text-muted small">
+            Página @Model.Datos.Pagina de @Model.Datos.Paginas
+        </span>
+
+        <nav aria-label="Paginación de tareas">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(Model.Datos.Pagina <= 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-page="Index"
+                       asp-route-solicitudId="@Model.Datos.Solicitud?.Id"
+                       asp-route-pagina="@(Model.Datos.Pagina - 1)">
+                        <i class="bi bi-chevron-left me-1"></i>
+                        Anterior
+                    </a>
+                </li>
+
+                <li class="page-item @(Model.Datos.Pagina >= Model.Datos.Paginas ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-page="Index"
+                       asp-route-solicitudId="@Model.Datos.Solicitud?.Id"
+                       asp-route-pagina="@(Model.Datos.Pagina + 1)">
+                        Siguiente
+                        <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
+
     @foreach (var tarea in Model.Datos.Filas)
     {
         <partial name="_ConfirmarEliminacion" model="tarea" />

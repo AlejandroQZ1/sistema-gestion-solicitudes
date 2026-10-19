@@ -1,9 +1,14 @@
+
 @page
 @model AdministracionSoluciones.Pages.Tareas.CreateModel
-@{ ViewData["Title"] = "Nueva tarea"; }
-@* Los formularios comparten los mismos campos y validaciones. *@
+
+@{
+    ViewData["Title"] = "Nueva tarea";
+}
+
 <partial name="_Formulario" model="Model" />
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script src="~/js/tareas.js" asp-append-version="true"></script>
 }

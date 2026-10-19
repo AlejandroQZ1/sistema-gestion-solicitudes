@@ -6,7 +6,9 @@ using AdministracionSoluciones.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+
 namespace AdministracionSoluciones.Pages.Solicitudes;
+
 
 public class CreateModel : PageModel
 {
@@ -65,6 +67,8 @@ public class CreateModel : PageModel
         TempData["Exito"] = resultado.Mensaje;
 
         return RedirectToPage("/Solicitudes/Index");
+
+
     }
 
     private async Task CargarRepresentantesAsync()

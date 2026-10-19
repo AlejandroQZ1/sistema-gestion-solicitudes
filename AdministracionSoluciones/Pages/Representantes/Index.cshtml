@@ -1,33 +1,181 @@
+
 @page
 @model AdministracionSoluciones.Pages.Representantes.IndexModel
-@{ ViewData["Title"] = "Representantes"; }
-@if (TempData["Exito"] is string mensaje) { <div class="alert alert-success" role="status">@mensaje</div> }
-@if (Model.Error != null) { <div class="alert alert-danger" role="alert">@Model.Error</div> }
-<div class="card shadow-sm"><div class="card-body">
-<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5">Representantes</h2><a asp-page="Form" class="btn btn-primary">Nuevo</a></div>
-<div class="table-responsive"><table class="table table-striped align-middle">
-<thead><tr><th>Nombre</th><th>Correo electrónico</th><th>Acciones</th></tr></thead><tbody>
-@foreach (var item in Model.Items) {
-<tr><td>@item.Nombre</td><td>@item.Email</td><td>
-<a asp-page="Form" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
-<button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminar-@item.Id">Eliminar</button>
-</td></tr>
+
+@{
+    ViewData["Title"] = "Representantes";
 }
-@if (Model.Items.Count == 0 && Model.Error == null) { <tr><td colspan="3">No hay registros.</td></tr> }
-</tbody></table></div>
-@foreach (var item in Model.Items) {
-<div class="modal fade" id="eliminar-@item.Id" tabindex="-1" aria-labelledby="titulo-@item.Id" aria-hidden="true">
-<div class="modal-dialog"><div class="modal-content">
-<div class="modal-header"><h2 class="modal-title h5" id="titulo-@item.Id">Confirmar eliminación</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-<div class="modal-body">¿Realmente desea eliminar el elemento seleccionado?<p class="mt-2"><strong>@item.Nombre</strong></p></div>
-<div class="modal-footer"><form method="post" asp-page="Delete" asp-route-id="@item.Id"><button type="submit" class="btn btn-danger">Sí</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button></div>
-</div></div></div>
-}
-@if (Model.Error == null) {
-<nav aria-label="Paginación" class="d-flex gap-3 align-items-center">
-@if (Model.Pagina > 1) { <a asp-route-pagina="@(Model.Pagina - 1)" class="btn btn-outline-secondary">Anterior</a> }
-<span>Página @Model.Pagina de @Model.Paginas · @Model.Total registros</span>
-@if (Model.Pagina < Model.Paginas) { <a asp-route-pagina="@(Model.Pagina + 1)" class="btn btn-outline-secondary">Siguiente</a> }
-</nav>
-}
-</div></div>
+
+<div class="container-fluid pagina-siges">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="h3 mb-1 fw-bold text-dark">
+                <i class="bi bi-person-lines-fill text-primary me-2"></i>
+                Administración de representantes
+            </h2>
+            <p class="text-muted mb-0">
+                Consulta y administra los representantes registrados.
+            </p>
+        </div>
+
+        <a asp-page="Form" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            Nuevo representante
+        </a>
+    </div>
+
+    @if (TempData["Exito"] is string mensaje)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="status">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @mensaje
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @Model.Error
+        </div>
+    }
+
+    <section class="tarjeta-siges">
+        <div class="tarjeta-siges-header">
+            <h5>
+                <i class="bi bi-list-ul me-2"></i>
+                Representantes registrados
+            </h5>
+
+            <span class="badge text-bg-primary">
+                Total: @Model.Total
+            </span>
+        </div>
+
+        <div class="tarjeta-siges-body p-0">
+            <div class="table-responsive">
+                <table class="table tabla-siges table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo electrónico</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.Nombre</td>
+                                <td>@item.Email</td>
+                                <td>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-page="Form"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            Editar
+                                        </a>
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#eliminar-@item.Id">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                        @if (Model.Items.Count == 0 && Model.Error == null)
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-5">
+                                    <i class="bi bi-person-lines-fill fs-2 d-block mb-2"></i>
+                                    No hay representantes registrados.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    @foreach (var item in Model.Items)
+    {
+        <div class="modal fade"
+             id="eliminar-@item.Id"
+             tabindex="-1"
+             aria-labelledby="titulo-@item.Id"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="titulo-@item.Id">
+                            <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                            Confirmar eliminación
+                        </h2>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>¿Realmente desea eliminar el elemento seleccionado?</p>
+                        <div class="alert alert-light border mb-0">
+                            <strong>@item.Nombre</strong>
+                            <div class="text-muted small">@item.Email</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            No, cancelar
+                        </button>
+
+                        <form method="post" asp-page="Delete" asp-route-id="@item.Id">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i>
+                                Sí, eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Error == null)
+    {
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
+            <span class="text-muted small">
+                Página @Model.Pagina de @Model.Paginas · @Model.Total registros
+            </span>
+
+            <nav aria-label="Paginación de representantes">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(Model.Pagina <= 1 ? "disabled" : "")">
+                        <a asp-route-pagina="@(Model.Pagina - 1)"
+                           class="page-link">
+                            <i class="bi bi-chevron-left me-1"></i>
+                            Anterior
+                        </a>
+                    </li>
+
+                    <li class="page-item @(Model.Pagina >= Model.Paginas ? "disabled" : "")">
+                        <a asp-route-pagina="@(Model.Pagina + 1)"
+                           class="page-link">
+                            Siguiente
+                            <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

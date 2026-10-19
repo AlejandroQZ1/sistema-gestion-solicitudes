@@ -1,13 +1,31 @@
+
 @page
-@model IndexModel
 @{
-    // USR2 - Página de bienvenida (usa la plantilla del sitio de USR3: Pages/Shared/_Layout.cshtml)
     ViewData["Title"] = "Inicio";
 }
-<link rel="stylesheet" href="~/css/seguridad.css" asp-append-version="true" />
 
-<section class="bienvenida">
-    <img src="~/img/logo-siges.svg" alt="Logo SIGES" class="bienvenida-logo" />
-    <h2>Bienvenido, @Model.NombreCompleto</h2>
-    <p>Utilice el menú de la izquierda para acceder a las opciones del sistema.</p>
-</section>
+<div class="container-fluid pagina-siges">
+    <div class="mb-4">
+        <h2 class="h3 mb-1">Bienvenido a SIGES</h2>
+        <p class="text-muted mb-0">Sistema de Administración de Solicitudes</p>
+    </div>
+
+    <div class="tarjeta-siges">
+        <div class="p-5 text-center">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4"
+                 style="width: 88px; height: 88px; background-color: #e8efff; color: #315da8;">
+                <i class="bi bi-folder-check" style="font-size: 2.8rem;"></i>
+            </div>
+
+            <h3 class="h4 mb-2">Bienvenido, Administrador del sistema</h3>
+            <p class="text-muted mb-4">
+                Utilice el menú lateral para acceder a las opciones del sistema.
+            </p>
+
+            <a asp-page="/Solicitudes/Index" class="btn btn-primary">
+                <i class="bi bi-journal-text me-2"></i>
+                Consultar solicitudes
+            </a>
+        </div>
+    </div>
+</div>

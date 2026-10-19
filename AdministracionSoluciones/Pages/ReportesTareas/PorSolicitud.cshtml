@@ -1,7 +1,11 @@
+
 @page
 @model AdministracionSoluciones.Pages.ReportesTareas.PorSolicitudModel
-@{ ViewData["Title"] = "Tareas de una solicitud por mes"; }
-@* Presentacion compartida de los filtros y resultados del reporte. *@
+
+@{
+    ViewData["Title"] = "Tareas de una solicitud por mes";
+}
+
 <partial name="_Reporte" model="Model.Datos" />
 
 @section Scripts {

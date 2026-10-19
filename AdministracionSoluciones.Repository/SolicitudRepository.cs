@@ -28,6 +28,8 @@ namespace AdministracionSoluciones.Repository
             pagina = Math.Clamp(pagina, 1, totalPaginas);
             var offset = (pagina - 1) * RegistrosPorPagina;
 
+
+
             const string sql = @"
                 SELECT
                     s.SolicitudID,
@@ -59,6 +61,7 @@ namespace AdministracionSoluciones.Repository
                     ON e.EstadoSolicitudID = s.EstadoSolicitudID
                 ORDER BY s.SolicitudID DESC
                 LIMIT @Limite OFFSET @Offset;";
+
 
             var items = await connection.QueryAsync<Solicitud>(
                 sql,
@@ -126,7 +129,11 @@ namespace AdministracionSoluciones.Repository
                     FechaRespuesta,
                     FechaInicio
                 )
+
+
                 VALUES
+
+
                 (
                     @ConsecutivoOficio,
                     @DocumentoRespuesta,
@@ -244,9 +251,11 @@ namespace AdministracionSoluciones.Repository
 
         public async Task<IEnumerable<Solicitud>> ListarPendientesDeVencimientoAsync()
         {
+
             using var connection = _dbConnectionFactory.CreateConnection();
 
             const string sql = @"
+
                 SELECT
                     s.SolicitudID,
                     s.ConsecutivoOficio,
@@ -273,6 +282,11 @@ namespace AdministracionSoluciones.Repository
                 WHERE s.FechaRespuesta IS NULL;";
 
             return await connection.QueryAsync<Solicitud>(sql);
+
+
+
         }
+
     }
+
 }
