@@ -1,4 +1,4 @@
-using AdministracionSoluciones.Models.Tareas;
+using AdministracionSoluciones.Entities.Tareas;
 using AdministracionSoluciones.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 namespace AdministracionSoluciones.Pages.ReportesTareas;

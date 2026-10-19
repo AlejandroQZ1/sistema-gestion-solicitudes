@@ -28,13 +28,13 @@ namespace AdministracionSoluciones.Repository
                         s.Titulo,
                         d.Mes,
                         d.Anio,
-                        d.Monto,
-                        d.IVA,
-                        d.Total,
-                        d.PorcentajeCobro
+                        SUM(d.Monto) AS Monto,
+                        SUM(d.IVA) AS IVA,
+                        SUM(d.Total) AS Total
                     FROM desgloses d
                     INNER JOIN solicitudes s ON d.SolicitudID = s.SolicitudID
                     WHERE d.Mes = @Mes AND d.Anio = @Anio
+                    GROUP BY s.SolicitudID, s.ConsecutivoOficio, s.Titulo, d.Mes, d.Anio
                     ORDER BY s.ConsecutivoOficio ASC";
 
                 return await connection.QueryAsync<ReporteMontoFacturacionItem>(sql, new { Mes = mes, Anio = anio });

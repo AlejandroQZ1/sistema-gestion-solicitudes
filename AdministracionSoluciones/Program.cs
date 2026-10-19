@@ -10,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Agrega Razor Pages y protege las páginas mediante sesión.
 builder.Services.AddRazorPages()
     .AddMvcOptions(options =>
-        options.Filters.Add<SesionRequeridaFilter>());
+    {
+        options.Filters.Add<SesionRequeridaFilter>();
+        options.ModelMetadataDetailsProviders.Add(new MetadatosTareaFormulario());
+    });
 
 // Acceso a datos: MySQL con Dapper.
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();

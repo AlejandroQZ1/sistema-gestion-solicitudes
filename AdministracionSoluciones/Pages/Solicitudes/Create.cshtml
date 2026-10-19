@@ -158,9 +158,21 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        $(function () {
             const form = document.getElementById("formSolicitud");
             const boton = document.getElementById("btnGuardar");
+
+            // Un texto compuesto solo por espacios tampoco cumple el campo obligatorio.
+            $(form).find('[name="Solicitud.ConsecutivoOficio"], [name="Solicitud.Titulo"]').each(function () {
+                $(this).rules("add", {
+                    normalizer: function (value) { return value.trim(); },
+                    messages: {
+                        required: this.name === "Solicitud.Titulo"
+                            ? "El título es obligatorio."
+                            : "El consecutivo de oficio es obligatorio."
+                    }
+                });
+            });
 
             form.addEventListener("submit", function (event) {
                 if (!$(form).valid()) {

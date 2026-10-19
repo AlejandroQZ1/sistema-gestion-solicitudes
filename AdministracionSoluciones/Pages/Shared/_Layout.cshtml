@@ -170,26 +170,34 @@
             </header>
 
             <main class="contenido-principal">
-                @if (TempData["Exito"] != null)
+                @if (paginaActual.StartsWith("/Desgloses"))
                 {
-                    <div class="alert alert-success alert-dismissible fade show shadow-sm"
-                         role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        @TempData["Exito"]
-                        <button type="button" class="btn-close"
-                                data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                    </div>
+                    <partial name="_ResultadoDesglose" />
                 }
-
-                @if (TempData["Error"] != null)
+                else
                 {
-                    <div class="alert alert-danger alert-dismissible fade show shadow-sm"
-                         role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        @TempData["Error"]
-                        <button type="button" class="btn-close"
-                                data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                    </div>
+                    @if (TempData["Exito"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm"
+                             role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["Exito"]
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm"
+                             role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    }
+
                 }
 
                 @RenderBody()

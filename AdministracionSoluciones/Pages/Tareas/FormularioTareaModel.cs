@@ -1,6 +1,6 @@
 using AdministracionSoluciones.Entities;
 using AdministracionSoluciones.Infraestructura;
-using AdministracionSoluciones.Models.Tareas;
+using AdministracionSoluciones.Entities.Tareas;
 using AdministracionSoluciones.Seguridad;
 using AdministracionSoluciones.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;

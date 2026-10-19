@@ -1,6 +1,6 @@
 
 @* Filtros y resultados de los reportes mensuales por usuario o solicitud. *@
-@model AdministracionSoluciones.Models.Tareas.ReporteTareas
+@model AdministracionSoluciones.Entities.Tareas.ReporteTareas
 @using System.Globalization
 
 @{
@@ -31,7 +31,7 @@
         <div class="p-3">
             <h3 class="h5 mb-3">Filtros del reporte</h3>
 
-            <form method="get" asp-page="@accion" novalidate>
+            <form method="get" asp-page="@accion">
                 <input type="hidden" name="Consultar" value="true" />
 
                 <div class="row g-3 align-items-end">

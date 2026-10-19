@@ -1,0 +1,40 @@
+@{
+    var exito = TempData["Exito"] as string;
+    var error = TempData["Error"] as string;
+}
+@if (!string.IsNullOrEmpty(exito) || !string.IsNullOrEmpty(error))
+{
+    <div class="modal fade" id="modalResultadoDesglose" tabindex="-1"
+         aria-labelledby="resultadoDesgloseTitulo" aria-describedby="resultadoDesgloseMensaje"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultadoDesgloseTitulo">
+                        @(string.IsNullOrEmpty(error) ? "Operación completada" : "No se pudo completar la operación")
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="resultadoDesgloseMensaje">
+                    @if (!string.IsNullOrEmpty(exito))
+                    {
+                        <p class="mb-0">@exito</p>
+                    }
+                    @if (!string.IsNullOrEmpty(error))
+                    {
+                        <p class="mb-0">@error</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const elemento = document.getElementById('modalResultadoDesglose');
+            bootstrap.Modal.getOrCreateInstance(elemento).show();
+        });
+    </script>
+}

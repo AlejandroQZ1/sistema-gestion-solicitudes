@@ -1,4 +1,4 @@
-namespace AdministracionSoluciones.Services
+namespace AdministracionSoluciones.Entities
 {
     /// <summary>
     /// Respuesta de una operación de negocio: si salió bien y el mensaje para mostrar.

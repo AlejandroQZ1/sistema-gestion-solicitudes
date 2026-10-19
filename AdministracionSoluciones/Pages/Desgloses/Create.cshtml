@@ -107,19 +107,21 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="Desglose.IVA" class="form-label">IVA (13%)</label>
+                        <label for="desgloseIVA" class="form-label">IVA (13%)</label>
                         <div class="input-group">
                             <span class="input-group-text">₡</span>
-                            <input asp-for="Desglose.IVA" type="text" readonly
+                            <input type="text" readonly
+                                   value="@Model.Desglose.IVA.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
                                    class="form-control bg-white" id="desgloseIVA" />
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="Desglose.Total" class="form-label">Total</label>
+                        <label for="desgloseTotal" class="form-label">Total</label>
                         <div class="input-group">
                             <span class="input-group-text">₡</span>
-                            <input asp-for="Desglose.Total" type="text" readonly
+                            <input type="text" readonly
+                                   value="@Model.Desglose.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
                                    class="form-control bg-white fw-bold"
                                    id="desgloseTotal" />
                         </div>

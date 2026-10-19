@@ -207,10 +207,14 @@
 
                     const id = boton.getAttribute('data-id');
 
-                    form.action = '?handler=Eliminar&id=' +
-                        encodeURIComponent(id) +
-                        '@(Model.SolicitudId.HasValue ? $"&solicitudId={Model.SolicitudId.Value}" : "")' +
-                        '&pagina=@Model.PaginaActual';
+                    const destino = new URL(window.location.href);
+                    destino.search = '';
+                    destino.searchParams.set('handler', 'Eliminar');
+                    destino.searchParams.set('id', id);
+                    destino.searchParams.set('pagina', '@Model.PaginaActual');
+                    const solicitudId = '@Model.SolicitudId';
+                    if (solicitudId) destino.searchParams.set('solicitudId', solicitudId);
+                    form.action = destino.pathname + destino.search;
 
                     const descripcion = boton.getAttribute('data-descripcion');
                     const texto = document.getElementById('eliminarRegistroDesc');
