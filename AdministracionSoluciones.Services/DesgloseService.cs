@@ -80,6 +80,9 @@ namespace AdministracionSoluciones.Services
                     return error;
                 }
 
+                // Cálculo automático de IVA (13%) y Total (Monto + IVA)
+                CalcularTotales(desglose);
+
                 desglose.DesgloseID = await _desgloseRepository.InsertAsync(desglose);
 
                 // La bitácora utiliza los importes calculados por la base.
@@ -111,6 +114,8 @@ namespace AdministracionSoluciones.Services
                 {
                     return error;
                 }
+
+                CalcularTotales(datos);
 
                 await _desgloseRepository.UpdateAsync(datos);
 
@@ -201,6 +206,12 @@ namespace AdministracionSoluciones.Services
                 return Resultado.Error("El porcentaje de cobro debe encontrarse entre 0% y 100%.", nameof(Desglose.PorcentajeCobro));
             }
             return null;
+        }
+
+        private static void CalcularTotales(Desglose d)
+        {
+            d.IVA = Math.Round(d.Monto * 0.13m, 2);
+            d.Total = Math.Round(d.Monto + d.IVA, 2);
         }
 
         private static object DatosDesglose(Desglose d) => new

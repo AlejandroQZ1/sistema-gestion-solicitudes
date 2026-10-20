@@ -1,20 +1,22 @@
+
 @page
 @model AdministracionSoluciones.Pages.Reportes.MontosFacturacionModel
+
 @{
     ViewData["Title"] = "Reporte de Facturación Mensual";
 }
 
 <!-- ENCABEZADO Y ACCIONES (SOL7) -->
 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3 no-print">
-    <div>
+        <div>
         <h2 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+                <i class="bi bi-graph-up-arrow text-primary me-2"></i>
             Reporte de Facturación Mensual
-        </h2>
-        <p class="text-muted mb-0">
+            </h2>
+            <p class="text-muted mb-0">
             Monto total que se facturará por mes entre todas las solicitudes (Criterio HU SOL7).
-        </p>
-    </div>
+            </p>
+        </div>
     <div class="d-flex gap-2">
         <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
             <i class="bi bi-printer me-1"></i> Imprimir Reporte
@@ -37,23 +39,23 @@
         </h6>
     </div>
     <div class="card-body">
-        <form method="get" class="row g-3 align-items-end">
+            <form method="get" class="row g-3 align-items-end">
             <div class="col-md-4 col-sm-6">
                 <label for="selectMes" class="form-label fw-bold text-secondary">Mes a consultar</label>
                 <select name="Mes" id="selectMes" asp-items="Model.MesesSelectList" class="form-select"></select>
-            </div>
+                </div>
             <div class="col-md-4 col-sm-6">
                 <label for="inputAnio" class="form-label fw-bold text-secondary">Año</label>
                 <input type="number" name="Anio" id="inputAnio" value="@Model.Anio" min="2000" max="2100" class="form-control" />
-            </div>
+                </div>
             <div class="col-md-4 col-sm-12 d-flex gap-2">
                 <button type="submit" class="btn btn-primary w-100" style="background-color: #243b6b; border-color: #243b6b;">
                     <i class="bi bi-search me-1"></i> Generar Reporte
-                </button>
-            </div>
-        </form>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 <!-- TARJETAS MÉTRICAS EJECUTIVAS (ESTILO SB ADMIN 2 - USR3 & SOL7) -->
 <div class="row mb-4">
@@ -78,7 +80,7 @@
             <div class="text-muted small mt-1">Suma total (Monto + IVA) de todas las solicitudes</div>
         </div>
     </div>
-</div>
+            </div>
 
 <!-- TABLA DE DETALLE POR SOLICITUD (Criterio SOL7) -->
 <div class="card shadow-sm border-0">
@@ -88,7 +90,7 @@
             Detalle por Solicitud — @Model.Reporte.NombreMes @Model.Reporte.Anio
         </h6>
         <span class="badge bg-secondary">@Model.Reporte.Items.Count() solicitud(es) facturable(s)</span>
-    </div>
+        </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table tabla-siges align-middle mb-0">
@@ -103,6 +105,7 @@
                         <th class="text-end" style="width: 170px;">Total por Solicitud</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @if (!Model.Reporte.Items.Any())
                     {
@@ -114,6 +117,7 @@
                             </td>
                         </tr>
                     }
+
                     @foreach (var item in Model.Reporte.Items)
                     {
                         <tr>

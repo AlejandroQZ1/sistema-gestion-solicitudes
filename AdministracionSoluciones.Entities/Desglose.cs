@@ -53,6 +53,12 @@ namespace AdministracionSoluciones.Entities
         [Display(Name = "Porcentaje de cobro (%)")]
         public decimal PorcentajeCobro { get; set; } = 100m;
 
+        /// <summary>
+        /// Indica si el desglose ya está asignado o tiene datos relacionados (ej. facturación, tareas o cobranza).
+        /// Criterio SOL2: Solo se puede eliminar si no ha sido asignado.
+        /// </summary>
+        public bool Asignado { get; set; }
+
         // Propiedades de navegación / lectura para tablas y reportes
         public string? ConsecutivoOficio { get; set; }
         public string? TituloSolicitud { get; set; }

@@ -98,8 +98,21 @@
                     <span class="menu-icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span class="menu-text">Cerrar sesión</span>
                 </a>
+            </nav>
+
+            <div class="sidebar-toggler-wrapper">
+                <button type="button" class="sidebar-toggler-btn"
+                        id="sidebarToggle" title="Plegar / desplegar menú">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
             </div>
 
+            <div class="cerrar-sesion p-2">
+                <a asp-page="/Login/CerrarSesion" class="menu-item text-danger">
+                    <span class="menu-icon"><i class="bi bi-box-arrow-right"></i></span>
+                    <span class="menu-text">Cerrar sesión</span>
+                </a>
+            </div>
         </aside>
 
         <!-- PARTE DERECHA DEL SISTEMA (TOPBAR + CONTENIDO + FOOTER) -->
@@ -154,8 +167,25 @@
                         </ul>
                     </div>
                 </div>
-
             </header>
+
+            <main class="contenido-principal">
+                @if (paginaActual.StartsWith("/Desgloses"))
+                {
+                    <partial name="_ResultadoDesglose" />
+                }
+                else
+                {
+                    @if (TempData["Exito"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm"
+                             role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["Exito"]
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    }
 
             <!-- CONTENIDO DE CADA PÁGINA -->
             <main class="contenido-principal">
@@ -185,6 +215,38 @@
 
         </div>
 
+    <!-- Modal confirmación de eliminación global (SOL2) -->
+    <div class="modal fade" id="modalConfirmarEliminar"
+         tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalEliminarLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white"
+                            data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="fs-5 mb-2">
+                        ¿Realmente desea eliminar el elemento seleccionado?
+                    </p>
+                    <div class="alert alert-warning py-2 mb-0 small"
+                         id="eliminarRegistroDesc">
+                        Esta acción es permanente y no se puede deshacer.
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary px-4"
+                            data-bs-dismiss="modal">No</button>
+                    <form id="formConfirmarEliminar" method="post" class="d-inline">
+                        <input type="hidden" name="id" id="eliminarRegistroId" />
+                        <button type="submit" class="btn btn-danger px-4">Sí</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- DIÁLOGO MODAL GLOBAL DE CONFIRMACIÓN DE ELIMINACIÓN (Requerimiento Pág. 16: "¿Realmente desea eliminar el elemento seleccionado? Si / No") -->
@@ -219,6 +281,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>

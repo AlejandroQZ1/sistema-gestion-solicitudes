@@ -1,16 +1,18 @@
+
 @page
 @model AdministracionSoluciones.Pages.Desgloses.IndexModel
+
 @{
     ViewData["Title"] = "Desgloses de Solicitud";
 }
 
 <!-- ENCABEZADO DE PÁGINA (SOL2) -->
 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
-    <div>
+        <div>
         <h2 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="bi bi-cash-stack text-primary me-2"></i>
+                <i class="bi bi-cash-stack text-primary me-2"></i>
             Administración de Desgloses
-        </h2>
+            </h2>
         <p class="text-muted mb-0">
             @if (Model.SolicitudSeleccionada != null)
             {
@@ -24,25 +26,25 @@
                 <span>Gestión del costo y horas planificadas mes a mes para las solicitudes.</span>
             }
         </p>
-    </div>
+        </div>
     <div class="d-flex gap-2">
-        @if (Model.SolicitudId.HasValue)
-        {
-            <a asp-page="/Solicitudes/Index" class="btn btn-outline-secondary">
+            @if (Model.SolicitudId.HasValue)
+            {
+                <a asp-page="/Solicitudes/Index" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i> Volver a Solicitudes
-            </a>
+                </a>
             <a asp-page="Create" asp-route-solicitudId="@Model.SolicitudId" class="btn btn-primary" style="background-color: #243b6b; border-color: #243b6b;">
                 <i class="bi bi-plus-circle me-1"></i> + Nuevo Desglose
-            </a>
-        }
-        else
-        {
+                </a>
+            }
+            else
+            {
             <a asp-page="Create" class="btn btn-primary" style="background-color: #243b6b; border-color: #243b6b;">
                 <i class="bi bi-plus-circle me-1"></i> + Nuevo Desglose
-            </a>
-        }
+                </a>
+            }
+        </div>
     </div>
-</div>
 
 <!-- FILTRO RÁPIDO POR SOLICITUD -->
 <div class="card shadow-sm border-0 mb-4 bg-white">
@@ -63,7 +65,7 @@
                         </!option>
                     }
                 </select>
-            </div>
+        </div>
             @if (Model.SolicitudId.HasValue)
             {
                 <div class="col-auto">
@@ -98,6 +100,7 @@
                         <th class="text-center" style="min-width: 140px;">Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @if (!Model.Desgloses.Any())
                     {
@@ -108,6 +111,7 @@
                             </td>
                         </tr>
                     }
+
                     @foreach (var d in Model.Desgloses)
                     {
                         <tr>
@@ -145,15 +149,16 @@
                                     @(string.IsNullOrWhiteSpace(d.Observaciones) ? "—" : d.Observaciones)
                                 </span>
                             </td>
+
                             <td class="text-center text-nowrap">
                                 <a asp-page="Edit" asp-route-id="@d.DesgloseID" class="btn btn-sm btn-outline-secondary me-1" title="Editar desglose">
                                     <i class="bi bi-pencil-square"></i> Editar
                                 </a>
 
                                 <!-- Botón que invoca el diálogo modal de confirmación requerido (Pág. 16) -->
-                                <button type="button" 
+                                <button type="button"
                                         class="btn btn-sm btn-outline-danger btn-confirmar-eliminar"
-                                        data-bs-toggle="modal" 
+                                        data-bs-toggle="modal"
                                         data-bs-target="#modalConfirmarEliminar"
                                         data-id="@d.DesgloseID"
                                         data-descripcion="Desglose de @d.NombreMes @d.Anio por @d.Total.ToString("C2")"
@@ -169,36 +174,40 @@
     </div>
 
     <!-- PAGINACIÓN (MÁXIMO 10 ELEMENTOS POR PÁGINA) -->
-    @if (Model.TotalPaginas > 1)
-    {
+        @if (Model.TotalPaginas > 1)
+        {
         <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-            <span class="text-muted small">
-                Mostrando @Model.Desgloses.Count() de @Model.TotalRegistros registros
-            </span>
-            <nav aria-label="Navegación de páginas">
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item @(Model.PaginaActual <= 1 ? "disabled" : "")">
+                <span class="text-muted small">
+                    Mostrando @Model.Desgloses.Count() de @Model.TotalRegistros registros
+                </span>
+
+                <nav aria-label="Navegación de páginas">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item @(Model.PaginaActual <= 1 ? "disabled" : "")">
                         <a class="page-link" asp-page="Index" asp-route-solicitudId="@Model.SolicitudId" asp-route-pagina="@(Model.PaginaActual - 1)">
-                            Anterior
-                        </a>
-                    </li>
-                    @for (int p = 1; p <= Model.TotalPaginas; p++)
-                    {
-                        <li class="page-item @(p == Model.PaginaActual ? "active" : "")">
-                            <a class="page-link" asp-page="Index" asp-route-solicitudId="@Model.SolicitudId" asp-route-pagina="@p">
-                                @p
+                                Anterior
                             </a>
                         </li>
-                    }
-                    <li class="page-item @(Model.PaginaActual >= Model.TotalPaginas ? "disabled" : "")">
+
+                        @for (int p = 1; p <= Model.TotalPaginas; p++)
+                        {
+                            <li class="page-item @(p == Model.PaginaActual ? "active" : "")">
+                            <a class="page-link" asp-page="Index" asp-route-solicitudId="@Model.SolicitudId" asp-route-pagina="@p">
+                                    @p
+                                </a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.PaginaActual >= Model.TotalPaginas ? "disabled" : "")">
                         <a class="page-link" asp-page="Index" asp-route-solicitudId="@Model.SolicitudId" asp-route-pagina="@(Model.PaginaActual + 1)">
-                            Siguiente
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    }
+                                Siguiente
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts {
@@ -207,6 +216,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('modalConfirmarEliminar');
             const form = document.getElementById('formConfirmarEliminar');
+
             if (modal && form) {
                 modal.addEventListener('show.bs.modal', function (event) {
                     const btn = event.relatedTarget;

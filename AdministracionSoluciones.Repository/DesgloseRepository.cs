@@ -32,6 +32,12 @@ namespace AdministracionSoluciones.Repository
                         d.Total,
                         d.Observaciones,
                         d.PorcentajeCobro,
+                        CASE 
+                            WHEN d.Asignado = 1 THEN 1
+                            WHEN s.Estado IN ('Iniciada', 'Respondida', 'Finalizada') THEN 1
+                            WHEN s.RepresentanteID IS NOT NULL THEN 1
+                            ELSE 0
+                        END AS Asignado,
                         s.ConsecutivoOficio,
                         s.Titulo AS TituloSolicitud
                     FROM desgloses d
@@ -59,6 +65,12 @@ namespace AdministracionSoluciones.Repository
                         d.Total,
                         d.Observaciones,
                         d.PorcentajeCobro,
+                        CASE 
+                            WHEN d.Asignado = 1 THEN 1
+                            WHEN s.Estado IN ('Iniciada', 'Respondida', 'Finalizada') THEN 1
+                            WHEN s.RepresentanteID IS NOT NULL THEN 1
+                            ELSE 0
+                        END AS Asignado,
                         s.ConsecutivoOficio,
                         s.Titulo AS TituloSolicitud
                     FROM desgloses d
@@ -97,6 +109,8 @@ namespace AdministracionSoluciones.Repository
                         Anio = @Anio,
                         Horas = @Horas,
                         Monto = @Monto,
+                        IVA = @IVA,
+                        Total = @Total,
                         Observaciones = @Observaciones,
                         PorcentajeCobro = @PorcentajeCobro
                     WHERE DesgloseID = @DesgloseID";
@@ -110,6 +124,32 @@ namespace AdministracionSoluciones.Repository
             using (var connection = _dbConnectionFactory.CreateConnection())
             {
                 return await connection.ExecuteAsync("DELETE FROM desgloses WHERE DesgloseID = @Id", new { Id = id });
+            }
+        }
+
+        /// <summary>
+        /// Valida si el desglose ya está marcado como asignado o con registros relacionados.
+        /// Criterio SOL2: Solo se puede eliminar un registro si no ha sido asignado.
+        /// Se considera asignado si el desglose tiene Asignado = 1 o si la solicitud ya está iniciada/asignada.
+        /// </summary>
+        public async Task<bool> TieneDatosRelacionadosAsync(int id)
+        {
+            using (var connection = _dbConnectionFactory.CreateConnection())
+            {
+                var sql = @"
+                    SELECT 
+                        CASE 
+                            WHEN d.Asignado = 1 THEN 1
+                            WHEN s.Estado IN ('Iniciada', 'Respondida', 'Finalizada') THEN 1
+                            WHEN s.RepresentanteID IS NOT NULL THEN 1
+                            ELSE 0
+                        END
+                    FROM desgloses d
+                    INNER JOIN solicitudes s ON d.SolicitudID = s.SolicitudID
+                    WHERE d.DesgloseID = @Id";
+
+                var asignado = await connection.ExecuteScalarAsync<int?>(sql, new { Id = id });
+                return (asignado ?? 0) == 1;
             }
         }
 
