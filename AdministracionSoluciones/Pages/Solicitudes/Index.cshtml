@@ -48,7 +48,7 @@
                 <i class="bi bi-list-ul me-2"></i>
                 Solicitudes registradas
             </h5>
-            <span class="badge text-bg-primary">
+            <span class="badge bg-primary text-white">
                 Total: @Model.Total
             </span>
         </div>
@@ -57,9 +57,9 @@
 
             <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
                 <span class="small text-muted fw-semibold">Indicadores:</span>
-                <span class="badge rounded-pill text-bg-success">Nueva</span>
-                <span class="badge rounded-pill text-bg-warning">Vence hoy</span>
-                <span class="badge rounded-pill text-bg-danger">Vencida</span>
+                <span class="badge rounded-pill bg-success text-white">Nueva</span>
+                <span class="badge rounded-pill bg-warning text-dark">Vence hoy</span>
+                <span class="badge rounded-pill bg-danger text-white">Vencida</span>
             </div>
 
             @if (!Model.Solicitudes.Any())
@@ -91,12 +91,12 @@
                                 var identificador = solicitud.IdentificadorEstado?.ToUpperInvariant() ?? "";
 
                                 var claseEstado = solicitud.VenceHoy
-                                    ? "text-bg-warning"
+                                    ? "bg-warning text-dark"
                                     : identificador switch
                                     {
-                                        "NUEVA" => "text-bg-success",
-                                        "VENCIDA" => "text-bg-danger",
-                                        _ => "text-bg-secondary"
+                                        "NUEVA" => "bg-success text-white",
+                                        "VENCIDA" => "bg-danger text-white",
+                                        _ => "bg-secondary text-white"
                                     };
 
                                 <tr>

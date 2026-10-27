@@ -53,7 +53,7 @@
                 Usuarios registrados
             </h5>
 
-            <span class="badge text-bg-primary">
+            <span class="badge bg-primary text-white">
                 Total: @Model.Usuarios.Count()
             </span>
         </div>
@@ -90,10 +90,10 @@
 
                             var claseEstado = estadoActual switch
                             {
-                                "activo" => "text-bg-success",
-                                "inactivo" => "text-bg-secondary",
-                                "bloqueado" => "text-bg-danger",
-                                _ => "text-bg-secondary"
+                                "activo" => "bg-success text-white",
+                                "inactivo" => "bg-secondary text-white",
+                                "bloqueado" => "bg-danger text-white",
+                                _ => "bg-secondary text-white"
                             };
 
                             <tr>
@@ -102,7 +102,7 @@
 
                                     @if (esActual)
                                     {
-                                        <span class="badge text-bg-light border ms-1">Usted</span>
+                                        <span class="badge bg-light text-dark border ms-1">Usted</span>
                                     }
                                 </td>
 
