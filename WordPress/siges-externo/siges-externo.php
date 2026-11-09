@@ -220,7 +220,7 @@ function siges_ext4_guardar($solicitud_id)
         if ($mes === false || $mes < 1 || $mes > 12) {
             $errores[] = "Línea $n: el mes es requerido (1 a 12).";
         }
-        if ($anio === false || $anio < 2000 || $anio > 2100) {
+        if ($anio === false || $anio < 1) {
             $errores[] = "Línea $n: el año no es válido.";
         }
         if (!is_numeric($horas) || $horas <= 0) {
@@ -500,7 +500,7 @@ function siges_ext4_shortcode($atts)
         tr.innerHTML = `
             <td><select class="form-select form-select-sm" name="siges_lineas[${i}][mes]" required>
                     <option value="">--</option>${opcionesMes}</select></td>
-            <td><input type="number" class="form-control form-control-sm" name="siges_lineas[${i}][anio]" min="2000" max="2100" required></td>
+            <td><input type="number" class="form-control form-control-sm" name="siges_lineas[${i}][anio]" min="1" required></td>
             <td><input type="number" class="form-control form-control-sm" name="siges_lineas[${i}][horas]" min="0.01" step="0.01" required></td>
             <td><input type="number" class="form-control form-control-sm siges-monto" name="siges_lineas[${i}][monto]" min="0.01" step="0.01" required></td>
             <td><input type="text" class="form-control form-control-sm siges-iva" readonly tabindex="-1"></td>
@@ -511,7 +511,7 @@ function siges_ext4_shortcode($atts)
 
         // Los valores se asignan con .value (no se interpolan en el HTML) para evitar inyección.
         const set = (campo, valor) => { if (valor !== undefined && valor !== null && valor !== '') tr.querySelector(`[name$="[${campo}]"]`).value = valor; };
-        set('mes', d.mes); set('anio', d.anio || new Date().getFullYear()); set('horas', d.horas);
+        set('mes', d.mes); set('anio', d.anio ?? new Date().getFullYear()); set('horas', d.horas);
         set('monto', d.monto); set('observaciones', d.observaciones);
         set('porcentaje', d.porcentaje ?? d.porcentaje_cobro ?? d.PorcentajeCobro);
 
