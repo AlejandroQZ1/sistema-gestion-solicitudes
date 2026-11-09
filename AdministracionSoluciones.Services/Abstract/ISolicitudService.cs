@@ -18,6 +18,14 @@ namespace AdministracionSoluciones.Services.Abstract
             Solicitud solicitud,
             string usuarioActual);
 
+        Task<Resultado> ActualizarPublicacionAsync(
+            int solicitudId,
+            bool publicar,
+            DateTime? fechaVencimiento,
+            string usuarioActual);
+
+        Task<IEnumerable<Solicitud>> ListarPublicadasVigentesAsync();
+
         Task<Resultado> EliminarAsync(
             int id,
             string usuarioActual);

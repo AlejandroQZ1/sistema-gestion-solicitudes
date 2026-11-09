@@ -44,6 +44,8 @@ namespace AdministracionSoluciones.Repository
                     s.FechaIngreso,
                     s.FechaRespuesta,
                     s.FechaInicio,
+                    s.Publicado,
+                    s.FechaVencimientoPublicacion,
                     r.Nombre AS NombreRepresentante,
                     r.Email AS EmailRepresentante,
                     e.Nombre AS NombreEstado,
@@ -88,6 +90,8 @@ namespace AdministracionSoluciones.Repository
                     s.FechaIngreso,
                     s.FechaRespuesta,
                     s.FechaInicio,
+                    s.Publicado,
+                    s.FechaVencimientoPublicacion,
                     r.Nombre AS NombreRepresentante,
                     r.Email AS EmailRepresentante,
                     e.Nombre AS NombreEstado,
@@ -194,6 +198,59 @@ namespace AdministracionSoluciones.Repository
                     EstadoAnteriorID = estadoAnteriorId
                 });
             return filasAfectadas > 0;
+        }
+
+        public async Task<bool> ActualizarPublicacionAsync(
+            int solicitudId,
+            bool publicadoAnterior,
+            DateTime? fechaAnterior,
+            bool publicadoNuevo,
+            DateTime? fechaNueva)
+        {
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            const string sql = @"
+                UPDATE solicitudes
+                SET Publicado = @PublicadoNuevo,
+                    FechaVencimientoPublicacion = @FechaNueva
+                WHERE SolicitudID = @SolicitudID
+                  AND Publicado = @PublicadoAnterior
+                  AND FechaVencimientoPublicacion <=> @FechaAnterior;";
+
+            var filasAfectadas = await connection.ExecuteAsync(sql, new
+            {
+                SolicitudID = solicitudId,
+                PublicadoAnterior = publicadoAnterior,
+                FechaAnterior = fechaAnterior?.Date,
+                PublicadoNuevo = publicadoNuevo,
+                FechaNueva = fechaNueva?.Date
+            });
+
+            return filasAfectadas > 0;
+        }
+
+        public async Task<IEnumerable<Solicitud>> ListarPublicadasVigentesAsync(
+            DateTime fechaActual)
+        {
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            const string sql = @"
+                SELECT
+                    SolicitudID,
+                    ConsecutivoOficio,
+                    Titulo,
+                    Descripcion,
+                    Publicado,
+                    FechaVencimientoPublicacion
+                FROM solicitudes
+                WHERE Publicado = 1
+                  AND FechaVencimientoPublicacion IS NOT NULL
+                  AND FechaVencimientoPublicacion >= @FechaActual
+                ORDER BY SolicitudID DESC;";
+
+            return await connection.QueryAsync<Solicitud>(
+                sql,
+                new { FechaActual = fechaActual.Date });
         }
 
         public async Task<bool> ActualizarEstadoAsync(

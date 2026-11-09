@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace AdministracionSoluciones.Pages.Solicitudes;
 
+[ValidateAntiForgeryToken]
 public class IndexModel : PageModel
 {
     private const int RegistrosPorPagina = 5;
@@ -40,6 +41,35 @@ public class IndexModel : PageModel
         TotalPaginas = Math.Max(
             1,
             (int)Math.Ceiling(Total / (double)RegistrosPorPagina));
+    }
+
+    public async Task<IActionResult> OnPostActualizarPublicacionAsync(
+        int id,
+        bool publicar,
+        DateTime? fechaVencimientoPublicacion,
+        int pagina = 1)
+    {
+        pagina = Math.Max(1, pagina);
+
+        Resultado resultado;
+        if (!ModelState.IsValid)
+        {
+            resultado = AdministracionSoluciones.Entities.Resultado.Error(
+                "La fecha indicada no tiene un formato válido.");
+        }
+        else
+        {
+            var usuarioActual = Sesion.NombreUsuario(HttpContext);
+            resultado = await _solicitudService.ActualizarPublicacionAsync(
+                id,
+                publicar,
+                fechaVencimientoPublicacion,
+                usuarioActual);
+        }
+
+        TempData[resultado.Exito ? "Exito" : "Error"] = resultado.Mensaje;
+
+        return RedirectToPage("/Solicitudes/Index", new { pagina });
     }
 
     public async Task<IActionResult> OnPostEliminarAsync(

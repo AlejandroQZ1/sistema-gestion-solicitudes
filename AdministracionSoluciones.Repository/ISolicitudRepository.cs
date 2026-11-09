@@ -15,6 +15,16 @@ namespace AdministracionSoluciones.Repository
 
         Task<bool> ActualizarAsync(Solicitud solicitud, int estadoAnteriorId);
 
+        Task<bool> ActualizarPublicacionAsync(
+            int solicitudId,
+            bool publicadoAnterior,
+            DateTime? fechaAnterior,
+            bool publicadoNuevo,
+            DateTime? fechaNueva);
+
+        Task<IEnumerable<Solicitud>> ListarPublicadasVigentesAsync(
+            DateTime fechaActual);
+
         Task<bool> ActualizarEstadoAsync(
             int solicitudId,
             int estadoAnteriorId,

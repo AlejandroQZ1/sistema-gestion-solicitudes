@@ -27,6 +27,10 @@ namespace AdministracionSoluciones.Entities
 
         public DateTime? FechaInicio { get; set; }
 
+        public bool Publicado { get; set; }
+
+        public DateTime? FechaVencimientoPublicacion { get; set; }
+
         // Propiedades auxiliares para las consultas con Dapper.
         public string? NombreRepresentante { get; set; }
 
