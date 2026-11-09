@@ -80,33 +80,65 @@
         return lineas;
     }
 
-    const archivo = document.createElement('input');
-    archivo.type = 'file';
-    archivo.accept = '.xlsx,.xls';
-    archivo.hidden = true;
-    document.body.appendChild(archivo);
+    const paginaCarga = document.getElementById('siges-archivo-excel');
 
-    document.addEventListener('siges:cargar-excel', function () {
-        archivo.value = '';
-        archivo.click();
-    });
+    if (paginaCarga) {
+        const retorno = sessionStorage.getItem('siges_excel_retorno');
+        const cancelar = document.getElementById('siges-cancelar-excel');
+        cancelar.href = retorno || window.location.href;
 
-    archivo.addEventListener('change', async function () {
-        if (!archivo.files.length) return;
-        if (!window.XLSX || !window.SigesPropuesta) {
-            mensaje('Carga no disponible', 'No se pudo preparar la lectura del Excel.');
-            return;
+        document.getElementById('siges-confirmar-excel').addEventListener('click', async function () {
+            if (!retorno || !paginaCarga.files.length || !window.XLSX) {
+                document.getElementById('siges-error-excel').textContent =
+                    'Seleccione un archivo Excel desde el formulario de participación.';
+                return;
+            }
+
+            try {
+                const datos = await paginaCarga.files[0].arrayBuffer();
+                const libro = XLSX.read(datos);
+                const lineas = leerLineas(libro.Sheets[libro.SheetNames[0]]);
+                sessionStorage.setItem('siges_excel_lineas', JSON.stringify(lineas));
+                window.location.assign(retorno);
+            } catch (error) {
+                document.getElementById('siges-error-excel').textContent =
+                    error.message || 'Revise el archivo e intente de nuevo.';
+            }
+        });
+    } else {
+        document.addEventListener('siges:cargar-excel', function () {
+            if (!window.sigesPaginaExcel) {
+                mensaje('Carga no disponible', 'No se encontró la página Cargar Excel.');
+                return;
+            }
+
+            const formulario = document.getElementById('siges-form-ext4');
+            const campos = {};
+            for (const campo of new FormData(formulario).entries()) {
+                if (!campo[0].startsWith('siges_lineas[') && campo[0] !== 'siges_nonce') {
+                    campos[campo[0]] = campo[1];
+                }
+            }
+            sessionStorage.setItem('siges_excel_campos', JSON.stringify(campos));
+            sessionStorage.setItem('siges_excel_retorno', window.location.href);
+            window.location.assign(window.sigesPaginaExcel);
+        });
+
+        const camposGuardados = sessionStorage.getItem('siges_excel_campos');
+        const lineasGuardadas = sessionStorage.getItem('siges_excel_lineas');
+        if (camposGuardados) {
+            const formulario = document.getElementById('siges-form-ext4');
+            const campos = JSON.parse(camposGuardados);
+            for (const [nombre, valor] of Object.entries(campos)) {
+                const campo = formulario.elements.namedItem(nombre);
+                if (campo) campo.value = valor;
+            }
+            sessionStorage.removeItem('siges_excel_campos');
         }
-
-        try {
-            const datos = await archivo.files[0].arrayBuffer();
-            const libro = XLSX.read(datos);
-            const hoja = libro.Sheets[libro.SheetNames[0]];
-            const lineas = leerLineas(hoja);
-            window.SigesPropuesta.agregarLineas(lineas, true);
-            mensaje('Excel cargado', 'Se cargaron ' + lineas.length + ' líneas. Revise los datos antes de confirmar la propuesta.');
-        } catch (error) {
-            mensaje('No se pudo cargar el Excel', error.message || 'Revise el archivo e intente de nuevo.');
+        if (lineasGuardadas && window.SigesPropuesta) {
+            window.SigesPropuesta.agregarLineas(JSON.parse(lineasGuardadas), true);
+            sessionStorage.removeItem('siges_excel_lineas');
+            mensaje('Excel cargado', 'Revise las líneas antes de confirmar la propuesta.');
         }
-    });
+    }
 })();

@@ -12,7 +12,8 @@ if (!defined('ABSPATH')) {
 add_action('wp_enqueue_scripts', function () {
     global $post;
 
-    if (!$post || !has_shortcode($post->post_content, 'siges_participar')) {
+    if (!$post || (!has_shortcode($post->post_content, 'siges_participar')
+        && !has_shortcode($post->post_content, 'siges_cargar_excel'))) {
         return;
     }
 
@@ -30,6 +31,22 @@ add_action('wp_enqueue_scripts', function () {
         '1.0.0',
         true
     );
+
+    $pagina_excel = get_page_by_path('cargar-excel');
+    wp_add_inline_script(
+        'siges-cargar-excel',
+        'window.sigesPaginaExcel = ' . wp_json_encode($pagina_excel ? get_permalink($pagina_excel) : '') . ';',
+        'before'
+    );
+});
+
+add_shortcode('siges_cargar_excel', function () {
+    return '<h1>Cargar Excel</h1>'
+        . '<p>Seleccione el Excel con las líneas de la propuesta.</p>'
+        . '<input id="siges-archivo-excel" type="file" accept=".xlsx,.xls">'
+        . '<p id="siges-error-excel" role="alert"></p>'
+        . '<button id="siges-confirmar-excel" type="button">Cargar</button> '
+        . '<a id="siges-cancelar-excel" href="#">Cancelar</a>';
 });
 
 add_shortcode('siges_participaciones', function () {
@@ -62,7 +79,9 @@ add_shortcode('siges_participaciones', function () {
                 $cedula
             ));
 
-            if (!$proveedor) {
+            if ($db->last_error) {
+                echo '<p>Las participaciones no están disponibles en este momento.</p>';
+            } elseif (!$proveedor) {
                 echo '<p>Proveedor no existe.</p>';
             } else {
                 $solicitudes = $db->get_results($db->prepare(
