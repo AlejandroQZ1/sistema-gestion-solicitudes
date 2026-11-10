@@ -51,8 +51,10 @@ builder.Services.AddHostedService<VencimientoSolicitudesHostedService>();
 
 // Desgloses y reporte de facturación.
 builder.Services.AddScoped<DesgloseRepository>();
+builder.Services.AddScoped<IPropuestaRepository, PropuestaRepository>();
 builder.Services.AddScoped<ReporteRepository>();
 builder.Services.AddScoped<IDesgloseService, DesgloseService>();
+builder.Services.AddScoped<IPropuestaService, PropuestaService>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
 
 // Servicio de correo electrónico (SOL6).
@@ -90,6 +92,32 @@ app.UseSession();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+// Feed público de solo lectura para el portal WordPress.
+// La consulta ya filtra publicaciones activas y este DTO expone solo datos públicos.
+app.MapGet("/api/solicitudes/publicadas", async (
+    ISolicitudService solicitudesService,
+    ILogger<Program> logger) =>
+{
+    try
+    {
+        var solicitudes = await solicitudesService.ListarPublicadasVigentesAsync();
+        var respuesta = solicitudes.Select(solicitud => new SolicitudPublicaDto(
+            solicitud.ConsecutivoOficio,
+            solicitud.Titulo,
+            solicitud.Descripcion,
+            DateOnly.FromDateTime(solicitud.FechaVencimientoPublicacion!.Value.Date)));
+
+        return Results.Ok(respuesta);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "No se pudo atender la consulta pública de solicitudes.");
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+})
+.AllowAnonymous()
+.WithName("ListarSolicitudesPublicadas");
 
 app.Run();
 
@@ -132,3 +160,9 @@ static async Task CrearAdministradorInicialAsync(WebApplication app)
             "No se pudo preparar el administrador inicial. Revise la conexión a MySQL y la configuración externa requerida.");
     }
 }
+
+public sealed record SolicitudPublicaDto(
+    string ConsecutivoOficio,
+    string Titulo,
+    string? Descripcion,
+    DateOnly FechaVencimientoPublicacion);

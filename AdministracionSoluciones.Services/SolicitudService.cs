@@ -81,6 +81,102 @@ public class SolicitudService :
         return _solicitudRepository.ObtenerAsync(id);
     }
 
+    public async Task<Resultado> ActualizarPublicacionAsync(
+        int solicitudId,
+        bool publicar,
+        DateTime? fechaVencimiento,
+        string usuarioActual)
+    {
+        if (solicitudId <= 0)
+        {
+            return Resultado.Error("La solicitud indicada no es válida.");
+        }
+
+        if (publicar && !fechaVencimiento.HasValue)
+        {
+            return Resultado.Error(
+                "Debe indicar una fecha de vencimiento para publicar.",
+                nameof(Solicitud.FechaVencimientoPublicacion));
+        }
+
+        if (publicar && fechaVencimiento!.Value.Date < DateTime.Today)
+        {
+            return Resultado.Error(
+                "La fecha de vencimiento debe ser hoy o una fecha futura.",
+                nameof(Solicitud.FechaVencimientoPublicacion));
+        }
+
+        var fechaNueva = publicar ? fechaVencimiento!.Value.Date : (DateTime?)null;
+
+        try
+        {
+            var existente = await _solicitudRepository.ObtenerAsync(solicitudId);
+            if (existente == null)
+            {
+                return Resultado.Error("La solicitud no existe.");
+            }
+
+            var fechaAnterior = existente.FechaVencimientoPublicacion?.Date;
+            if (existente.Publicado == publicar && fechaAnterior == fechaNueva)
+            {
+                return Resultado.Ok("La publicación ya tiene esos datos.");
+            }
+
+            var actualizada = await _solicitudRepository.ActualizarPublicacionAsync(
+                solicitudId,
+                existente.Publicado,
+                fechaAnterior,
+                publicar,
+                fechaNueva);
+
+            if (!actualizada)
+            {
+                return Resultado.Error(
+                    "La publicación cambió mientras se procesaba. Actualice el listado e inténtelo de nuevo.");
+            }
+
+            await _bitacoraService.RegistrarAsync(
+                usuarioActual,
+                Modulo,
+                publicar ? "Publicar" : "Retirar publicación",
+                new
+                {
+                    SolicitudID = existente.SolicitudID,
+                    ConsecutivoOficio = existente.ConsecutivoOficio,
+                    Anterior = new
+                    {
+                        existente.Publicado,
+                        FechaVencimientoPublicacion = fechaAnterior
+                    },
+                    Actual = new
+                    {
+                        Publicado = publicar,
+                        FechaVencimientoPublicacion = fechaNueva
+                    }
+                });
+
+            return Resultado.Ok(
+                publicar
+                    ? "La publicación se guardó correctamente."
+                    : "La solicitud se retiró del módulo externo.");
+        }
+        catch (DbException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Falló la actualización de publicación para la solicitud {SolicitudID}.",
+                solicitudId);
+            return Resultado.Error(
+                "No se pudo actualizar la publicación de la solicitud.");
+        }
+    }
+
+    public Task<IEnumerable<Solicitud>> ListarPublicadasVigentesAsync()
+    {
+        return _solicitudRepository.ListarPublicadasVigentesAsync(
+            DateTime.Today);
+    }
+
     public async Task<Resultado> CrearAsync(
         Solicitud solicitud,
         string usuarioActual)

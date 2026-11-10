@@ -1,0 +1,60 @@
+@page
+@model AdministracionSoluciones.Pages.Propuestas.IndexModel
+
+@{
+    ViewData["Title"] = "Participaciones de la solicitud";
+}
+
+<div class="container-fluid pagina-siges">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Propuestas recibidas</h1>
+            <p class="text-muted mb-0">Solicitud #@Model.SolicitudId</p>
+        </div>
+        <a asp-page="/Solicitudes/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Regresar a solicitudes
+        </a>
+    </div>
+
+    <div class="tarjeta-siges">
+        <div class="table-responsive">
+            <table class="table tabla-siges align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Identificación</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Propuestas.Count == 0)
+                    {
+                        <tr><td colspan="5" class="text-center text-muted py-4">No hay propuestas registradas para esta solicitud.</td></tr>
+                    }
+                    @foreach (var propuesta in Model.Propuestas)
+                    {
+                        var aprobada = propuesta.Aprobada || propuesta.SolicitudTieneAprobacion;
+                        <tr>
+                            <td>@propuesta.CedulaJuridica</td>
+                            <td>@propuesta.NombreProveedor</td>
+                            <td>@propuesta.FechaPropuesta.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <span class="badge @(aprobada ? "text-bg-success" : "text-bg-secondary")">
+                                    @(propuesta.Aprobada ? "Aprobada" : aprobada ? "Otra propuesta aprobada" : "Pendiente")
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-page="Detalle"
+                                   asp-route-solicitudId="@Model.SolicitudId"
+                                   asp-route-propuestaId="@propuesta.PropuestaID"
+                                   class="btn btn-outline-primary btn-sm">Ver detalle</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

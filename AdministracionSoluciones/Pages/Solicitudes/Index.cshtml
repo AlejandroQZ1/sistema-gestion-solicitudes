@@ -75,6 +75,7 @@
                                 <th>Ingreso</th>
                                 <th>Respuesta</th>
                                 <th>Inicio</th>
+                                <th>Publicación externa</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -82,6 +83,9 @@
                             @foreach (var solicitud in Model.Solicitudes)
                             {
                                 var identificador = solicitud.IdentificadorEstado?.ToUpperInvariant() ?? "";
+                                var publicacionVencida = solicitud.Publicado
+                                    && solicitud.FechaVencimientoPublicacion.HasValue
+                                    && solicitud.FechaVencimientoPublicacion.Value.Date < DateTime.Today;
 
                                 var claseEstado = solicitud.VenceHoy
                                     ? "bg-warning text-dark"
@@ -134,8 +138,64 @@
                                         @(solicitud.FechaInicio?.ToString("dd/MM/yyyy") ?? "—")
                                     </td>
 
+                                    <td class="text-nowrap">
+                                        @if (!solicitud.Publicado)
+                                        {
+                                            <span class="badge bg-secondary">No publicada</span>
+                                        }
+                                        else if (!solicitud.FechaVencimientoPublicacion.HasValue)
+                                        {
+                                            <span class="badge bg-warning text-dark">Sin vencimiento</span>
+                                        }
+                                        else if (publicacionVencida)
+                                        {
+                                            <span class="badge bg-danger">Vencida</span>
+                                            <div class="small text-muted mt-1">@solicitud.FechaVencimientoPublicacion.Value.ToString("dd/MM/yyyy")</div>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Publicada</span>
+                                            <div class="small text-muted mt-1">Hasta @solicitud.FechaVencimientoPublicacion.Value.ToString("dd/MM/yyyy")</div>
+                                        }
+                                    </td>
+
                                     <td>
                                         <div class="acciones-solicitud">
+                                            <form method="post"
+                                                  asp-page-handler="ActualizarPublicacion"
+                                                  asp-antiforgery="true"
+                                                  class="publicacion-solicitud">
+                                                <input type="hidden" name="id" value="@solicitud.SolicitudID" />
+                                                <input type="hidden" name="pagina" value="@Model.Pagina" />
+                                                <label class="small fw-semibold" for="fecha-publicacion-@solicitud.SolicitudID">
+                                                    Vencimiento de publicación
+                                                </label>
+                                                <input id="fecha-publicacion-@solicitud.SolicitudID"
+                                                       name="fechaVencimientoPublicacion"
+                                                       type="date"
+                                                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                                       value="@(solicitud.FechaVencimientoPublicacion?.ToString("yyyy-MM-dd"))"
+                                                       class="form-control form-control-sm"
+                                                       aria-label="Fecha de vencimiento de publicación para @solicitud.ConsecutivoOficio" />
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    <button type="submit"
+                                                            name="publicar"
+                                                            value="true"
+                                                            class="btn btn-outline-success btn-sm">
+                                                        @(solicitud.Publicado ? "Guardar publicación" : "Publicar")
+                                                    </button>
+                                                    @if (solicitud.Publicado)
+                                                    {
+                                                        <button type="submit"
+                                                                name="publicar"
+                                                                value="false"
+                                                                class="btn btn-outline-secondary btn-sm">
+                                                            Retirar
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </form>
+
                                             <a asp-page="/Tareas/Index"
                                                asp-route-solicitudId="@solicitud.SolicitudID"
                                                class="btn btn-outline-primary btn-sm"
@@ -150,6 +210,14 @@
                                                title="Ver desglose">
                                                 <i class="bi bi-cash-stack me-1"></i>
                                                 Desglose
+                                            </a>
+
+                                            <a asp-page="/Propuestas/Index"
+                                               asp-route-solicitudId="@solicitud.SolicitudID"
+                                               class="btn btn-outline-primary btn-sm"
+                                               title="Ver participaciones propuestas">
+                                                <i class="bi bi-people me-1"></i>
+                                                Participaciones
                                             </a>
 
                                             <a asp-page="/Solicitudes/Edit"
@@ -235,8 +303,16 @@
     .pagina-siges .acciones-solicitud {
         display: flex;
         flex-wrap: wrap;
+        align-items: flex-start;
         gap: 0.4rem;
-        min-width: 280px;
+        min-width: 390px;
+    }
+
+    .pagina-siges .publicacion-solicitud {
+        display: grid;
+        gap: 0.35rem;
+        min-width: 220px;
+        max-width: 250px;
     }
 
         .pagina-siges .acciones-solicitud form {
@@ -257,7 +333,11 @@
         }
 
         .pagina-siges .acciones-solicitud {
-            min-width: 220px;
+            min-width: 280px;
+        }
+
+        .pagina-siges .publicacion-solicitud {
+            min-width: 210px;
         }
     }
 

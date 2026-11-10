@@ -1,5 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Data;
 using AdministracionSoluciones.Entities;
 using AdministracionSoluciones.Repository;
 using AdministracionSoluciones.Services.Abstract;
@@ -67,6 +68,33 @@ namespace AdministracionSoluciones.Services
                 // principal falló cuando ya pudo haberse guardado correctamente.
                 // El fallo queda registrado en el log de la aplicación.
             }
+        }
+
+        public async Task RegistrarAsync(
+            string usuario,
+            string modulo,
+            string accion,
+            object? datos,
+            IDbConnection connection,
+            IDbTransaction transaction)
+        {
+            var bitacora = CrearRegistro(usuario, modulo, accion, datos);
+            // En esta modalidad el error debe propagarse para revertir la operación principal.
+            await _bitacoraRepository.InsertAsync(bitacora, connection, transaction);
+        }
+
+        private static Bitacora CrearRegistro(string usuario, string modulo, string accion, object? datos)
+        {
+            return new Bitacora
+            {
+                Fecha = DateTime.Now,
+                Usuario = string.IsNullOrWhiteSpace(usuario) ? "sistema" : usuario,
+                Modulo = modulo,
+                Accion = accion,
+                Detalle = datos == null
+                    ? null
+                    : JsonSerializer.Serialize(datos, OpcionesJson)
+            };
         }
 
         /// <summary>Datos de un usuario aptos para la bitácora (sin contraseña).</summary>
