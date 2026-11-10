@@ -67,6 +67,7 @@ public sealed class PropuestaService : IPropuestaService
         connection.Open();
         using var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
         var committed = false;
+        Exception? errorTecnico = null;
 
         try
         {
@@ -170,6 +171,7 @@ public sealed class PropuestaService : IPropuestaService
         }
         catch (Exception ex)
         {
+            errorTecnico = ex;
             _logger.LogError(ex,
                 "Falló la aprobación de la propuesta {PropuestaID} para solicitud {SolicitudID}.",
                 propuestaId, solicitudId);
@@ -181,6 +183,12 @@ public sealed class PropuestaService : IPropuestaService
             {
                 try { transaction.Rollback(); }
                 catch (Exception ex) { _logger.LogError(ex, "Falló la reversión de aprobación EXT7."); }
+            }
+            if (errorTecnico != null)
+            {
+                // El error se registra fuera de la transacción que acaba de revertirse.
+                await _bitacora.RegistrarAsync(usuarioActual, Modulo, "Error al aprobar propuesta",
+                    new { SolicitudID = solicitudId, PropuestaID = propuestaId, Error = errorTecnico.ToString() });
             }
         }
     }

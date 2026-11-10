@@ -170,7 +170,7 @@
             </header>
 
             <main class="contenido-principal">
-                @if (paginaActual.StartsWith("/Desgloses"))
+                @if (paginaActual.StartsWith("/Desgloses") || paginaActual.StartsWith("/Propuestas"))
                 {
                     <partial name="_ResultadoDesglose" />
                 }

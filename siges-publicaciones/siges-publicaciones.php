@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SIGES Publicaciones
  * Description: Listado y detalle de solicitudes públicas de SIGES (EXT2 y EXT3).
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires PHP: 7.4
  * Requires at least: 5.3
  */
@@ -10,6 +10,8 @@
 namespace SigesPublicaciones;
 
 defined('ABSPATH') || exit;
+
+require_once __DIR__ . '/fuente-siges.php';
 
 const SHORTCODE = 'siges_publicaciones';
 const ID_PARAM = 'siges_solicitud';
@@ -71,11 +73,15 @@ function render($attributes): string
             // Destino de Participar en EXT4.
             $participation_url = $demo ? add_query_arg(DEMO_PARAM, '1', $detail_url) : '';
             $ext4_page = absint($options['pagina_ext4']);
+            if (!$ext4_page && !$demo) {
+                $page = get_page_by_path('participar');
+                $ext4_page = $page ? $page->ID : 0;
+            }
             if ($ext4_page && $ext4_page !== get_the_ID() && get_post_type($ext4_page) === 'page'
                 && get_post_status($ext4_page) === 'publish') {
                 $ext4_url = get_permalink($ext4_page);
                 if ($ext4_url) {
-                    $participation_url = add_query_arg(ID_PARAM, $id, $ext4_url);
+                    $participation_url = add_query_arg('solicitud', $id, $ext4_url);
                 }
             }
             $participation_url = apply_filters('siges_ext_participar_url', $participation_url, $id, $detail_url, $demo);

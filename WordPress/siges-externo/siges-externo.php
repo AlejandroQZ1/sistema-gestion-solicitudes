@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SIGES - Módulo Externo
  * Description: Módulo externo de SIGES para proveedores. Incluye EXT4 (registrar propuesta) con el shortcode [siges_participar].
- * Version:     0.3.0
+ * Version:     0.3.1
  * Author:      Equipo SIGES - CUC
  *
  * ---------------------------------------------------------------------------
@@ -14,7 +14,7 @@
  *   define('SIGES_DB_PASS', 'contraseña');
  *
  * USO: crear una página "Participar" con el shortcode:
- *   [siges_participar detalle_url="/detalle-solicitud"]
+ *   [siges_participar]
  * La página se abre como /participar?solicitud=ID  (desde el botón "Participar" de EXT3).
  *
  * TABLAS (base de datos tiusr22pl_siges):
@@ -308,16 +308,20 @@ function siges_ajax_buscar_proveedor()
     wp_send_json_success(['existe' => (bool) $p, 'nombre' => $p ? $p->Nombre : '']);
 }
 
-/** Shortcode [siges_participar detalle_url="/detalle-solicitud"] */
+/** Formulario de propuesta y retorno al detalle de la publicación. */
 add_shortcode('siges_participar', 'siges_ext4_shortcode');
 function siges_ext4_shortcode($atts)
 {
-    $atts         = shortcode_atts(['detalle_url' => '/detalle-solicitud'], $atts);
+    $atts         = shortcode_atts(['detalle_url' => ''], $atts);
     if (!siges_db_conectada()) {
         return '<div class="alert alert-danger">No se pudo conectar a la base de datos de SIGES. Revise los datos SIGES_DB_* en wp-config.php y el acceso remoto.</div>';
     }
     $solicitud_id = absint($_GET['solicitud'] ?? 0);
-    $url_detalle  = esc_url(add_query_arg('solicitud', $solicitud_id, home_url($atts['detalle_url'])));
+    $pagina_publicaciones = get_page_by_path('publicaciones');
+    $detalle_base = $atts['detalle_url'] !== ''
+        ? home_url($atts['detalle_url'])
+        : ($pagina_publicaciones ? get_permalink($pagina_publicaciones) : home_url('/publicaciones/'));
+    $url_detalle = esc_url(add_query_arg('siges_solicitud', $solicitud_id, $detalle_base));
     $sol          = siges_solicitud_publicada($solicitud_id);
 
     if (!$sol) {

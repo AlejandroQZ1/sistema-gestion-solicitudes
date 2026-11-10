@@ -65,6 +65,8 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
+    // Cada despliegue puede mantener su sesión independiente en el mismo dominio.
+    options.Cookie.Name = builder.Configuration["Sesion:NombreCookie"] ?? ".SIGES.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
