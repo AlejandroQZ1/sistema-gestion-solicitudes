@@ -22,5 +22,15 @@ namespace AdministracionSoluciones.Repository
                 return await connection.ExecuteAsync(sql, bitacora);
             }
         }
+
+        public Task<int> InsertAsync(
+            Bitacora bitacora,
+            System.Data.IDbConnection connection,
+            System.Data.IDbTransaction transaction)
+        {
+            const string sql = @"INSERT INTO bitacora (Fecha, Usuario, Modulo, Accion, Detalle)
+                                 VALUES (@Fecha, @Usuario, @Modulo, @Accion, @Detalle)";
+            return connection.ExecuteAsync(sql, bitacora, transaction);
+        }
     }
 }

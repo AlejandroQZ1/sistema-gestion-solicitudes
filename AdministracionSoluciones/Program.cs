@@ -51,8 +51,10 @@ builder.Services.AddHostedService<VencimientoSolicitudesHostedService>();
 
 // Desgloses y reporte de facturación.
 builder.Services.AddScoped<DesgloseRepository>();
+builder.Services.AddScoped<IPropuestaRepository, PropuestaRepository>();
 builder.Services.AddScoped<ReporteRepository>();
 builder.Services.AddScoped<IDesgloseService, DesgloseService>();
+builder.Services.AddScoped<IPropuestaService, PropuestaService>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
 
 // Servicio de correo electrónico (SOL6).

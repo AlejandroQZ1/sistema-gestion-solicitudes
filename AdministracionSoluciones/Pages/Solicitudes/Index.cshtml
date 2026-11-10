@@ -212,6 +212,14 @@
                                                 Desglose
                                             </a>
 
+                                            <a asp-page="/Propuestas/Index"
+                                               asp-route-solicitudId="@solicitud.SolicitudID"
+                                               class="btn btn-outline-primary btn-sm"
+                                               title="Ver participaciones propuestas">
+                                                <i class="bi bi-people me-1"></i>
+                                                Participaciones
+                                            </a>
+
                                             <a asp-page="/Solicitudes/Edit"
                                                asp-route-id="@solicitud.SolicitudID"
                                                class="btn btn-outline-secondary btn-sm"

@@ -1,0 +1,119 @@
+@page
+@model AdministracionSoluciones.Pages.Propuestas.DetalleModel
+
+@{
+    ViewData["Title"] = "Detalle de propuesta";
+    var bloqueada = Model.Propuesta.Aprobada || Model.Propuesta.SolicitudTieneAprobacion;
+}
+
+<div class="container-fluid pagina-siges">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Detalle de propuesta</h1>
+            <p class="text-muted mb-0">
+                @Model.Propuesta.ConsecutivoOficio — @Model.Propuesta.TituloSolicitud
+            </p>
+        </div>
+        <a asp-page="Index" asp-route-solicitudId="@Model.SolicitudId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Regresar
+        </a>
+    </div>
+
+    @if (TempData["Exito"] is string exito)
+    {
+        <div class="alert alert-success" role="status">@exito</div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-danger" role="alert">@error</div>
+    }
+
+    <section class="tarjeta-siges mb-4">
+        <div class="p-3">
+            <h2 class="h5">Proveedor</h2>
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Identificación</dt><dd class="col-sm-9">@Model.Propuesta.CedulaJuridica</dd>
+                <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Propuesta.NombreProveedor</dd>
+                <dt class="col-sm-3">Fecha de propuesta</dt><dd class="col-sm-9">@Model.Propuesta.FechaPropuesta.ToString("dd/MM/yyyy HH:mm")</dd>
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">@(Model.Propuesta.Aprobada ? "Aprobada" : bloqueada ? "Otra propuesta aprobada para esta solicitud" : "Pendiente")</dd>
+            </dl>
+        </div>
+    </section>
+
+    <section class="tarjeta-siges mb-4">
+        <div class="p-3"><h2 class="h5 mb-0">Líneas propuestas</h2></div>
+        <div class="table-responsive">
+            <table class="table tabla-siges align-middle mb-0">
+                <thead><tr><th>Mes</th><th>Año</th><th class="text-end">Horas</th><th class="text-end">Monto</th><th class="text-end">IVA</th><th class="text-end">Total</th><th>Observaciones</th><th class="text-end">% cobro</th></tr></thead>
+                <tbody>
+                    @if (Model.Propuesta.Lineas.Count == 0)
+                    {
+                        <tr><td colspan="8" class="text-center text-muted py-4">La propuesta no contiene líneas.</td></tr>
+                    }
+                    @foreach (var linea in Model.Propuesta.Lineas)
+                    {
+                        <tr>
+                            <td>@linea.Mes</td><td>@linea.Anio</td>
+                            <td class="text-end">@linea.Horas.ToString("N2")</td>
+                            <td class="text-end">@linea.Monto.ToString("N2")</td>
+                            <td class="text-end">@linea.IVA.ToString("N2")</td>
+                            <td class="text-end">@linea.Total.ToString("N2")</td>
+                            <td>@linea.Observaciones</td>
+                            <td class="text-end">@linea.PorcentajeCobro.ToString("N2")%</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="p-3 d-flex justify-content-end">
+            <form method="post" asp-page-handler="Aprobar">
+                <input type="hidden" asp-for="SolicitudId" />
+                <input type="hidden" asp-for="PropuestaId" />
+                <button type="submit" class="btn btn-primary" disabled="@(bloqueada || Model.Propuesta.Lineas.Count == 0)">
+                    <i class="bi bi-check-circle me-1"></i> Aprobar propuesta
+                </button>
+            </form>
+        </div>
+    </section>
+
+    @if (Model.Aprobacion is not null)
+    {
+        <section class="tarjeta-siges mb-4">
+            <div class="p-3">
+                <h2 class="h5">Aprobación registrada</h2>
+                <p class="mb-1">Propuesta #@Model.Aprobacion.PropuestaID — @Model.Aprobacion.NombreProveedor (@Model.Aprobacion.CedulaJuridica)</p>
+                <p class="text-muted mb-0">Aprobó @Model.Aprobacion.Usuario el @Model.Aprobacion.FechaAprobacion.ToString("dd/MM/yyyy HH:mm:ss")</p>
+            </div>
+        </section>
+
+        <section class="tarjeta-siges">
+            <div class="p-3">
+                <h2 class="h5">Desgloses anteriores archivados</h2>
+                <p class="text-muted mb-0">Estas filas fueron reemplazadas y ya no forman parte del desglose vigente.</p>
+            </div>
+            <div class="table-responsive">
+                <table class="table tabla-siges align-middle mb-0">
+                    <thead><tr><th>ID anterior</th><th>Mes</th><th>Año</th><th class="text-end">Horas</th><th class="text-end">Monto</th><th class="text-end">IVA</th><th class="text-end">Total</th><th>Observaciones</th><th class="text-end">% cobro</th></tr></thead>
+                    <tbody>
+                        @if (Model.Historial.Count == 0)
+                        {
+                            <tr><td colspan="9" class="text-center text-muted py-4">No había desgloses formales previos para archivar.</td></tr>
+                        }
+                        @foreach (var anterior in Model.Historial)
+                        {
+                            <tr>
+                                <td>@anterior.DesgloseID</td><td>@anterior.Mes</td><td>@anterior.Anio</td>
+                                <td class="text-end">@anterior.Horas?.ToString("N2")</td>
+                                <td class="text-end">@anterior.Monto?.ToString("N2")</td>
+                                <td class="text-end">@anterior.IVA?.ToString("N2")</td>
+                                <td class="text-end">@anterior.Total?.ToString("N2")</td>
+                                <td>@anterior.Observaciones</td><td class="text-end">@anterior.PorcentajeCobro?.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+</div>
